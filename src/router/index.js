@@ -8,14 +8,21 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/index',
+      path: '/login',
       name: 'Login',
       component: Login
     },
     {
       path: '/',
       name: 'Index',
-      component: Index
+      component: Index,
+      /*beforeEnter(to, from, next){
+        console.log(to)
+        if (1){
+          next('/login')
+        }
+        next()
+      }*/
     }
   ]
 })
