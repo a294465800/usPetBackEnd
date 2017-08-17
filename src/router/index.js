@@ -6,6 +6,7 @@ import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import orderList from '@/components/orderList'
 import userList from '@/components/userList'
+import userOne from '@/components/userOne'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
           path: 'user/list',
           component: userList,
           name: 'user_list'
+        },
+        {
+          path: 'user/list/one',
+          component: userOne,
+          name: 'user_one'
         }
       ]
     }

@@ -151,6 +151,11 @@
                   props: {
                     type: 'text',
                     size: 'small'
+                  },
+                  on:{
+                  	click: () => {
+                      this.goToUserOne(params)
+                    }
                   }
                 }, '查看所有')
               ])
@@ -212,6 +217,13 @@
       changePage(e){
         console.log(e)
       },
+
+      /**
+      * 单用户跳转
+      * */
+      goToUserOne(user){
+      	this.$router.push({name: 'user_one', params: {id: user.row.id, all: user.row}})
+      }
 
     }
   }
