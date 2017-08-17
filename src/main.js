@@ -13,11 +13,14 @@ Vue.config.productionTip = false
 /**
 * 全局钩子，当未登录时自动跳转登录
 * */
-let a = true  //假设false为未登录
+//sessionStorage.user判断登录状态
 router.beforeEach((to, from, next) => {
-    console.log(from, to, 1)
-  if (a){
-    next()
+  if (sessionStorage.user){
+    if(to.name === 'Login'){
+      next(from.path)
+    }else {
+      next()
+    }
   }else {
     if (to.name !== 'Login'){
       next({path: '/login'})

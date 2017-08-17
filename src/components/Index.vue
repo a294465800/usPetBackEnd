@@ -28,7 +28,7 @@
               </Menu-item>
               <Submenu name="2">
                 <template slot="title">
-                  <Icon type="ios-paper"></Icon>
+                  <Icon type="information-circled"></Icon>
                   <span class="layout-text">信息审核</span>
                 </template>
                 <Menu-item name="1-1">审核通过</Menu-item>
@@ -36,7 +36,7 @@
               </Submenu>
               <Submenu name="3">
                 <template slot="title">
-                  <Icon type="ios-paper"></Icon>
+                  <Icon type="android-playstore"></Icon>
                   <span class="layout-text">店铺管理</span>
                 </template>
                 <Menu-item name="1-1">店铺列表</Menu-item>
@@ -44,7 +44,7 @@
               </Submenu>
               <Submenu name="4">
                 <template slot="title">
-                  <Icon type="ios-paper"></Icon>
+                  <Icon type="android-list"></Icon>
                   <span class="layout-text">订单查询</span>
                 </template>
                 <Menu-item name="1-1">订单列表</Menu-item>
@@ -52,14 +52,14 @@
               </Submenu>
               <Submenu name="5">
                 <template slot="title">
-                  <Icon type="ios-paper"></Icon>
+                  <Icon type="person"></Icon>
                   <span class="layout-text">用户管理</span>
                 </template>
                 <Menu-item name="1-1">用户列表</Menu-item>
               </Submenu>
               <Submenu name="6">
                 <template slot="title">
-                  <Icon type="ios-paper"></Icon>
+                  <Icon type="compose"></Icon>
                   <span class="layout-text">投诉反馈</span>
                 </template>
                 <Menu-item name="1-1">待处理</Menu-item>
@@ -102,10 +102,14 @@
   export default {
     data() {
       return {
-        user: 'Sennki',
+        user: '',
+        active: 1,
         spanLeft: 4,
         spanRight: 20
       }
+    },
+    created(){
+    	this.user = this.$route.params.user
     },
     computed: {
       iconSize () {
@@ -122,7 +126,8 @@
           title: '提示',
           content: '<p>确定退出登录吗？</p>',
           onOk: () => {
-          	this.$router
+          	sessionStorage.user = ''
+          	this.$router.push('/login')
           },
           onCancel: () => {
             this.$Message.info('取消了');

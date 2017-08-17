@@ -61,7 +61,7 @@
   <div class="login-part">
     <div class="login-title">{{message}}</div>
     <!--登录区域-->
-    <div class="login-form">
+    <div class="login-form" @keyup.enter="handleSubmit('loginInfo')">
       <div class="login-title-head">小主帮登录</div>
       <Form ref="loginInfo" :model="loginInfo" :rules="ruleLogin" :label-width="80" class="login-body">
         <Form-item label="帐号" prop="username">
@@ -128,6 +128,10 @@
           if (valid) {
           	if(this.loginInfo.username === 'sennki' && this.loginInfo.password === '123456'){
               this.$Message.success('登录成功!')
+              sessionStorage.user = this.loginInfo.username
+              setTimeout(() => {
+                this.$router.push({ name: 'Index', params: { user: this.loginInfo.username }})
+              }, 300)
             }else {
           		this.$Message.error('帐号或者密码不正确！')
             }
@@ -135,9 +139,6 @@
             this.$Message.error('请确认填写信息!')
           }
         })
-      },
-      handleReset (name) {
-        this.$refs[name].resetFields()
       }
     }
   }
