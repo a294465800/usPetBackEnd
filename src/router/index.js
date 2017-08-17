@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Index from '@/components/Index'
+import indexChart from '@/components/indexChart'
 import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import orderList from '@/components/orderList'
@@ -19,9 +20,13 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'Index',
       component: Index,
       children: [
+        {
+          path: '',
+          component: indexChart,
+          name: 'index_chart'
+        },
         {
           path: 'info/check',
           component: infoCheck,
