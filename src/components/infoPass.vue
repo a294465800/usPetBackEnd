@@ -4,7 +4,7 @@
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>信息审核</Breadcrumb-item>
-      <Breadcrumb-item>待审核</Breadcrumb-item>
+      <Breadcrumb-item>审核通过</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -28,7 +28,7 @@
         <Radio label="default">中</Radio>
         <Radio label="small">小</Radio>
       </Radio-group>
-      <Button type="info" @click="passAll">通过</Button>
+      <Button type="error" @click="closeAll">关闭</Button>
     </div>
     <div class="info-check-table">
       <Table :columns="columns10" :data="data9" :size="tableSize" @on-selection-change="selectAll"></Table>
@@ -53,7 +53,6 @@
     display: flex;
     flex-direction: column;
   }
-
   .info-check-table {
     width: 100%;
     clear: both;
@@ -78,14 +77,13 @@
     margin-right: 20px;
     font-weight: normal;
   }
-
   .table-action button {
     margin: 0 30px;
   }
 </style>
 
 <script>
-  import expandRow from './expandInfoCheck.vue'
+  import expandRow from './expandInfoPass.vue'
   export default {
     data() {
       return {
@@ -155,25 +153,14 @@
                   props: {
                     type: 'text',
                     size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      console.log(params)
-                      this.show(params.index)
-                    }
                   }
                 }, '查看'),
                 h('Button', {
                   props: {
                     type: 'text',
                     size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.passOne(params.index, params.id)
-                    }
                   }
-                }, '通过')
+                }, '关闭')
               ]);
             }
           }
@@ -235,6 +222,7 @@
     },
     methods: {
       changePage(e){
+        console.log(e)
       },
 
       /**
@@ -242,7 +230,7 @@
        * */
       selectAll(groups){
         let arr = []
-        for (let i in groups) {
+        for(let i in groups){
           arr.push(groups[i].id)
         }
         this.passIds = arr
@@ -251,40 +239,16 @@
       /**
        * 全选通过
        * */
-      passAll(){
+      closeAll(){
         this.$Modal.confirm({
           title: '提示',
           content: '<p>确定审核通过所选的店铺吗？</p>',
           onOk: () => {
-            this.$Message.info('已全部通过')
+            console.log(this.passIds)
+            this.$Message.info('已全部通过');
           },
           onCancel: () => {
-            this.$Message.warning('已取消')
-          }
-        })
-      },
-
-      /**
-       * 操作
-       * */
-      show (index) {
-        this.$Modal.info({
-          title: '店铺信息',
-          content: '测试'
-        })
-      },
-
-      passOne(index, id){
-      	const that = this
-        this.$Modal.confirm({
-          title: '提示',
-          content: '确定审核通过该店铺吗？',
-          onOk(){
-          	that.data9.splice(index, 1)
-            this.$Message.info('已通过')
-          },
-          onCancel(){
-            this.$Message.warning('已取消')
+            this.$Message.warning('已取消');
           }
         })
       }

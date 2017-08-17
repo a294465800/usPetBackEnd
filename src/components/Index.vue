@@ -34,28 +34,26 @@
                 <Menu-item name="/info/check">待审核</Menu-item>
                 <Menu-item name="/info/pass">审核通过</Menu-item>
               </Submenu>
-              <Submenu name="3">
+              <Submenu name="store">
                 <template slot="title">
                   <Icon type="android-playstore"></Icon>
                   <span class="layout-text">店铺管理</span>
                 </template>
-                <Menu-item name="3-1">店铺列表</Menu-item>
-                <Menu-item name="3-2">店铺统计</Menu-item>
+                <Menu-item name="store/list">店铺列表</Menu-item>
               </Submenu>
-              <Submenu name="4">
+              <Submenu name="order">
                 <template slot="title">
                   <Icon type="android-list"></Icon>
                   <span class="layout-text">订单查询</span>
                 </template>
-                <Menu-item name="4-1">订单列表</Menu-item>
-                <Menu-item name="4-2">店铺统计</Menu-item>
+                <Menu-item name="/order/list">订单列表</Menu-item>
               </Submenu>
-              <Submenu name="5">
+              <Submenu name="user">
                 <template slot="title">
                   <Icon type="person"></Icon>
                   <span class="layout-text">用户管理</span>
                 </template>
-                <Menu-item name="5-1">用户列表</Menu-item>
+                <Menu-item name="/user/list">用户列表</Menu-item>
               </Submenu>
               <Submenu name="6">
                 <template slot="title">
@@ -162,7 +160,7 @@
   }
 
   .layout-menu-left {
-    background: #464c5b;
+    background: #495060;
     height: 100%;
   }
 
@@ -201,10 +199,9 @@
       }
     },
     created(){
-    	this.user = this.$route.params.user
+    	this.user = sessionStorage.user
       this.active = this.$route.path
       this.open[0] = this.$route.name.split('_')[0]
-      console.log(this.open)
     },
     computed: {
       iconSize () {
@@ -225,7 +222,6 @@
           	this.$router.push('/login')
           },
           onCancel: () => {
-          	console.log(this.$global)
           	this.$http({
               url: 'https://api.douban.com/v2/movie/in_theaters',
             }).then(res => {
