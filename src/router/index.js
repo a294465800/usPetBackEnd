@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Index from '@/components/Index'
+import infoCheck from '@/components/infoCheck'
 
 Vue.use(Router)
 
@@ -16,13 +17,13 @@ export default new Router({
       path: '/',
       name: 'Index',
       component: Index,
-      /*beforeEnter(to, from, next){
-        console.log(to)
-        if (1){
-          next('/login')
+      children: [
+        {
+          path: 'info/check',
+          component: infoCheck,
+          name: 'info_check'
         }
-        next()
-      }*/
+      ]
     }
   ]
 })
