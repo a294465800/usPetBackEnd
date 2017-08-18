@@ -47,6 +47,7 @@
                   <span class="layout-text">订单查询</span>
                 </template>
                 <Menu-item name="/order/list">订单列表</Menu-item>
+                <Menu-item name="/order/deal">成交订单</Menu-item>
               </Submenu>
               <Submenu name="user">
                 <template slot="title">

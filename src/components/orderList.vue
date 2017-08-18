@@ -11,12 +11,12 @@
     <!--搜索框-->
     <div class="search-wrap">
       <Input v-model="search" placeholder="请输入">
-      <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="id">ID</Option>
-        <Option value="store">店铺</Option>
-        <Option value="name">昵称</Option>
-      </Select>
-      <Button slot="append" icon="ios-search"></Button>
+        <Select v-model="select" slot="prepend" style="width: 80px">
+          <Option value="id">商品ID</Option>
+          <Option value="store">店铺</Option>
+          <Option value="commodity">商品名称</Option>
+        </Select>
+        <Button slot="append" icon="ios-search"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -31,7 +31,7 @@
       </Radio-group>
     </div>
     <div class="info-check-table">
-      <Table :columns="columns10" :data="data9" :size="tableSize"></Table>
+      <Table :columns="columns" :data="orderList" :size="tableSize"></Table>
     </div>
     <!--/内容展示-->
 
@@ -85,19 +85,20 @@
 </style>
 
 <script>
-//  import expandRow from './expandUserList.vue'
+  import expandRow from './expandOrderList.vue'
   export default {
     data() {
       return {
         search: '',
-        select: 'name',
+        select: 'store',
         tableSize: 'default',
-        columns10: [
+        columns: [
           {
             title: 'ID',
             key: 'id',
             align: 'center',
-            width: 200
+            width: 200,
+            sortable: true
           },
           {
             type: 'expand',
@@ -111,9 +112,10 @@
             }
           },
           {
-            title: '用户昵称',
-            key: 'name',
-            align: 'center'
+            title: '所属店铺',
+            key: 'store',
+            align: 'center',
+            sortable: true
           },
           {
             title: '商品名称',
@@ -121,34 +123,23 @@
             align: 'center'
           },
           {
-            title: '购买店铺',
-            key: 'store',
-            align: 'center',
-            sortable: true
-          },
-          {
-            title: '联系电话',
-            key: 'tel',
-            width: 150,
-            align: 'center'
-          },
-          {
             title: '价格/(元)',
             key: 'price',
-            width: 100,
-            align: 'center'
+            width: 150,
+            align: 'center',
+            sortable: true
           },
           {
             title: '订单日期',
             key: 'create_time',
             align: 'center',
-            width: 150,
+            width: 250,
             sortable: true
           },
           {
             title: '操作',
             key: 'action',
-            width: 120,
+            width: 200,
             align: 'center',
             render: (h, params) => {
               return h('div', [
@@ -156,60 +147,53 @@
                   props: {
                     type: 'text',
                     size: 'small'
+                  },
+                  on: {
+                  	click(){
+                  		console.log(params)
+                    }
                   }
                 }, '查看所有')
               ])
             }
           }
         ],
-        data9: [
+        orderList: [
           {
             id: 1,
-            name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
             store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
+            create_time: '2017-06-20',
             price: '50',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店','萌萌哒宠物店', 'QQ哒宠物店','萌萌哒宠物店', 'QQ哒宠物店'],
+            deal: '5000',
             buy_times: 24
           },
           {
             id: 2,
-            name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
             store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            price: '50',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
+            create_time: '2017-04-11',
+            price: '23',
+            deal: '5000',
+            buy_times: 4
           },
           {
             id: 3,
-            name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
+            store: '丑丑哒宠物店',
             create_time: '2017-03-20',
-            price: '50',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
+            price: '553',
+            deal: '15000',
+            buy_times: 1
           },
           {
             id: 4,
-            name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
             store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            price: '50',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
+            create_time: '2017-12-20',
+            price: '150',
+            deal: '500',
+            buy_times: 240
           },
         ],
         passIds: []

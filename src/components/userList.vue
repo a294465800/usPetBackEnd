@@ -97,7 +97,8 @@
             title: 'ID',
             key: 'id',
             align: 'center',
-            width: 200
+            width: 200,
+            sortable: true
           },
           {
             type: 'expand',
