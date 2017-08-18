@@ -3,7 +3,10 @@
 
     <!--index头部-->
     <div class="index-head">
-      <img src="../assets/logo/logo.png" alt="小主帮" class="index-head-img">
+      <div class="index-logo">
+        <img src="../assets/logo/logo.png" alt="小主帮" class="index-head-img">
+        <span class="index-logo-text">小主帮</span>
+      </div>
       <div class="index-head-operate">
         <span class="index-head-welcome">欢迎你<span class="index-head-user">{{user}}</span></span>
         <span @click="logout" class="index-logout">退出</span>
@@ -122,9 +125,20 @@
     padding-left: 10px;
   }
 
+  .index-logo {
+    display: flex;
+    align-items: center;
+  }
+
   .index-head-img {
     width: 67px;
     height: 43px;
+  }
+
+  .index-logo-text {
+    color: #45bcb4;
+    font-size: 34px;
+    margin-left: 15px;
   }
 
   .index-logout {
@@ -203,11 +217,12 @@
     	this.user = sessionStorage.user
       this.active = this.$route.path
       this.open[0] = this.$route.name.split('_')[0]
+      console.log(this.active, this.open[0])
     },
     computed: {
       iconSize () {
         return this.spanLeft === 4 ? 14 : 24;
-      }
+      },
     },
     methods: {
 

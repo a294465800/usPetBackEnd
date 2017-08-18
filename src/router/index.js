@@ -7,6 +7,7 @@ import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import orderList from '@/components/orderList'
 import orderOne from '@/components/orderOne'
+import orderDeal from '@/components/orderDeal'
 import userList from '@/components/userList'
 import userOne from '@/components/userOne'
 
@@ -47,6 +48,11 @@ export default new Router({
           path: 'order/one',
           component: orderOne,
           name: 'order_one'
+        },
+        {
+          path: 'order/deal',
+          component: orderDeal,
+          name: 'order_deal'
         },
         {
           path: 'user/list',

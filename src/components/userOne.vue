@@ -82,6 +82,16 @@
   .table-action button {
     margin: 0 30px;
   }
+
+  .ivu-table-tbody .table-price span {
+       color: #ff963d;
+     }
+
+  .ivu-table-tbody .table-price span:after {
+    content: '元';
+    display: inline-block;
+    margin-left: 5px;
+  }
 </style>
 
 <script>
@@ -90,6 +100,7 @@
 			return {
 				user: '',
         tableSize: 'default',
+        search: '',
         select: 'id',
         columns: [
           {
@@ -107,7 +118,8 @@
             title: '价格/(元)',
             key: 'price',
             width: 150,
-            align: 'center'
+            align: 'center',
+            className: 'table-price'
           },
           {
             title: '购买店铺',
@@ -152,7 +164,13 @@
       }
 		},
     created(){
-			this.user = this.$route.params.all.name
+			this.user = this.$route.params.user.name
+    },
+
+    methods: {
+      changePage(e){
+      	console.log(e)
+      }
     }
 	}
 </script>

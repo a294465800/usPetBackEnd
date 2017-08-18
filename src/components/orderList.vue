@@ -82,6 +82,16 @@
   .table-action button {
     margin: 0 30px;
   }
+
+  .ivu-table-tbody .table-price span {
+    color: #ff963d;
+  }
+
+  .ivu-table-tbody .table-price span:after {
+    content: '元';
+    display: inline-block;
+    margin-left: 5px;
+  }
 </style>
 
 <script>
@@ -127,7 +137,8 @@
             key: 'price',
             width: 150,
             align: 'center',
-            sortable: true
+            sortable: true,
+            className: 'table-price'
           },
           {
             title: '订单日期',

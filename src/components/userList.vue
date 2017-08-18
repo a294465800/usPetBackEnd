@@ -223,7 +223,7 @@
       * 单用户跳转
       * */
       goToUserOne(user){
-      	this.$router.push({name: 'user_one', params: {id: user.row.id, all: user.row}})
+      	this.$router.push({name: 'user_one', params: {id: user.row.id, user: user.row}})
       }
 
     }

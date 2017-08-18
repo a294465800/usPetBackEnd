@@ -55,8 +55,7 @@
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>订单查询</Breadcrumb-item>
-      <Breadcrumb-item href="/order/list">订单列表</Breadcrumb-item>
-      <Breadcrumb-item>{{commodity.commodity}} — {{commodity.store}}</Breadcrumb-item>
+      <Breadcrumb-item>成交订单</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -64,8 +63,10 @@
     <div class="search-wrap">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="commodity_id">单号</Option>
+        <Option value="order_id">单号</Option>
         <Option value="name">昵称</Option>
+        <Option value="commodity">商品名称</Option>
+        <Option value="store">店铺</Option>
       </Select>
       <Button slot="append" icon="ios-search"></Button>
       </Input>
@@ -121,25 +122,34 @@
             key: 'price',
             width: 150,
             align: 'center',
+            sortable: true,
             className: 'table-price'
-          },
-          {
-          	title: '评分',
-            key: 'score',
-            align: 'center',
-            render: (h, params) => {
-          		return h('Rate', {
-          			props: {
-                  disabled: true,
-                  value: params.row.score
-                }
-              })
-            }
           },
           {
             title: '买家',
             key: 'name',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  },
+                  on:{
+                    click: () => {
+                      this.goToUserOne(params)
+                    }
+                  }
+                }, params.row.name)
+              ])
+            }
+          },
+          {
+            title: '店铺',
+            key: 'store',
+            align: 'center',
+            sortable: true
           },
           {
             title: '电话',
@@ -159,6 +169,7 @@
             id: 1,
             name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
+            store: '萌萌哒宠物店',
             tel: 18456122214,
             price: 50,
             create_time: '2017-03-20',
@@ -168,6 +179,7 @@
             id: 2,
             name: '爱吃鱼的猫',
             commodity: '狗狗洗澡',
+            store: '萌萌哒宠物店',
             tel: 18658411125,
             price: 150,
             create_time: '2017-03-20',
@@ -178,14 +190,17 @@
       }
 		},
 
-    created(){
-			this.commodity = this.$route.params.order
-    },
-
     methods: {
       changePage(e){
       	console.log(e)
       },
+
+      /**
+       * 单用户跳转
+       * */
+      goToUserOne(user){
+        this.$router.push({name: 'user_one', params: {id: user.row.id, user: user.row}})
+      }
     }
 	}
 </script>
