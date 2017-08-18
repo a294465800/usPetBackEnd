@@ -220,6 +220,12 @@
     right: 20px;
     color: #ff963d;
   }
+
+  .account-no {
+    font-size: 16px;
+    color: #ff963d;
+    text-align: center;
+  }
 </style>
 
 <template>
@@ -275,7 +281,7 @@
         </div>
       </div>
       <!--日流水图表-->
-      <div class="account-chart" :style="{height: biggest * 50 + 'px'}">
+      <div class="account-chart" :style="{height: biggest * 50 + 'px'}" v-if="daily.length">
         <ul class="account-chart-left">
           <li v-for="n in biggest">{{biggest - n}}</li>
         </ul>
@@ -287,6 +293,7 @@
         </ul>
         <div class="account-chart-title">金额（万元）</div>
       </div>
+      <div class="account-no" v-else>暂无数据</div>
       <!--/日流水图表-->
     </div>
     <!--/日流水-->
@@ -774,7 +781,7 @@
       	if(this.daily === this.dailys){
           this.daily = this.dailyt
         }else {
-          this.daily = this.dailys
+          this.daily = []
         }
         this.calChartDay()
       }

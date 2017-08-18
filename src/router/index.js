@@ -6,6 +6,7 @@ import indexChart from '@/components/indexChart'
 import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import orderList from '@/components/orderList'
+import orderOne from '@/components/orderOne'
 import userList from '@/components/userList'
 import userOne from '@/components/userOne'
 
@@ -41,6 +42,11 @@ export default new Router({
           path: 'order/list',
           component: orderList,
           name: 'order_list'
+        },
+        {
+          path: 'order/one',
+          component: orderOne,
+          name: 'order_one'
         },
         {
           path: 'user/list',

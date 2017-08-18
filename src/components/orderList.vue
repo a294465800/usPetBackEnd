@@ -3,8 +3,8 @@
 
     <!--面包屑导航-->
     <Breadcrumb>
-      <Breadcrumb-item>用户管理</Breadcrumb-item>
-      <Breadcrumb-item>用户列表</Breadcrumb-item>
+      <Breadcrumb-item>订单查询</Breadcrumb-item>
+      <Breadcrumb-item>商品列表</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -149,8 +149,8 @@
                     size: 'small'
                   },
                   on: {
-                  	click(){
-                  		console.log(params)
+                  	click: () => {
+                  		this.goToCommodity(params.row)
                     }
                   }
                 }, '查看所有')
@@ -206,6 +206,13 @@
         console.log(e)
       },
 
+      /**
+      * 单条商品跳转
+      * */
+      goToCommodity(params){
+//      	console.log(params)
+        this.$router.push({name: 'order_one', params: {order: params}})
+      }
     }
   }
 </script>
