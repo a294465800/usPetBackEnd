@@ -239,9 +239,13 @@
           },
           onCancel: () => {
           	this.$http({
-              url: 'https://api.douban.com/v2/movie/in_theaters',
+              url: this.$global.url + 'web/logout',
             }).then(res => {
-            	console.log(res)
+            	if('200' === res.data.code){
+            		console.log('退出')
+              }else {
+            		this.$Message.warning(res.data.msg)
+              }
             })
             this.$Message.info('取消了');
           }

@@ -5,12 +5,18 @@ import App from './App'
 import router from './router'
 import iView from 'iview'
 import axios from  'axios'
+import qs from  'qs'
 import 'iview/dist/styles/iview.css'
 import './public/css/main.css'
 import globalData from './components/globalData.vue'
 
+axios.defaults.headers = {
+  'Content-type': 'application/x-www-form-urlencoded'
+}
+axios.defaults.withCredentials = true
 Vue.use(iView)
 Vue.prototype.$http = axios
+Vue.prototype.$qs = qs
 Vue.prototype.$global = globalData.globalData
 Vue.config.productionTip = false
 
@@ -19,6 +25,8 @@ Vue.config.productionTip = false
 * */
 //sessionStorage.user判断登录状态
 router.beforeEach((to, from, next) => {
+  let cookies = window.document
+  console.log(cookies, 'cookie')
   if (sessionStorage.user){
     if(to.name === 'Login'){
       next(from.path)
