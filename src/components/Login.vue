@@ -126,15 +126,35 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-          	if(this.loginInfo.username === 'sennki' && this.loginInfo.password === '123456'){
+
+            /*if(this.loginInfo.username === 'sennki' && this.loginInfo.password === '123456'){
               this.$Message.success('登录成功!')
               sessionStorage.user = this.loginInfo.username
               setTimeout(() => {
                 this.$router.push({ name: 'Index', params: { user: this.loginInfo.username }})
               }, 300)
             }else {
-          		this.$Message.error('帐号或者密码不正确！')
-            }
+              this.$Message.error('帐号或者密码不正确！')
+            }*/
+//            console.log(this.$global)
+          	this.$http({
+              url: this.$global.url + 'web/login',
+              method: 'POST',
+              data: {
+              	username: this.loginInfo.username,
+                password: this.loginInfo.password
+              }
+            }).then(res => {
+            	console.log(res)
+            	if('200' === res.data.code){
+
+              }
+            })
+          	/*this.$http({
+              url: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css',
+            }).then(res => {
+            	console.log(res)
+            })*/
           } else {
             this.$Message.error('请确认填写信息!')
           }
