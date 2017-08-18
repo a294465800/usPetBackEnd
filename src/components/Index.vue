@@ -42,7 +42,7 @@
                   <Icon type="android-playstore"></Icon>
                   <span class="layout-text">店铺管理</span>
                 </template>
-                <Menu-item name="store/list">店铺列表</Menu-item>
+                <Menu-item name="/store/list">店铺列表</Menu-item>
               </Submenu>
               <Submenu name="order">
                 <template slot="title">

@@ -5,6 +5,8 @@ import Index from '@/components/Index'
 import indexChart from '@/components/indexChart'
 import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
+import storeList from '@/components/storeList'
+import storeChart from '@/components/storeChart'
 import orderList from '@/components/orderList'
 import orderOne from '@/components/orderOne'
 import orderDeal from '@/components/orderDeal'
@@ -38,6 +40,16 @@ export default new Router({
           path: 'info/pass',
           component: infoPass,
           name: 'info_pass'
+        },
+        {
+          path: 'store/list',
+          component: storeList,
+          name: 'store_list'
+        },
+        {
+          path: 'store/list/account',
+          component: storeChart,
+          name: 'store_chart'
         },
         {
           path: 'order/list',
