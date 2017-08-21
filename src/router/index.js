@@ -13,6 +13,7 @@ import orderDeal from '@/components/orderDeal'
 import userList from '@/components/userList'
 import userOne from '@/components/userOne'
 import complaintList from '@/components/complaintList'
+import complaintHandle from '@/components/complaintHandle'
 
 Vue.use(Router)
 
@@ -81,6 +82,11 @@ export default new Router({
           path: 'complaint/list',
           component: complaintList,
           name: 'complaint_list'
+        },
+        {
+          path: 'complaint/handle',
+          component: complaintHandle,
+          name: 'complain_handle'
         }
       ]
     }
