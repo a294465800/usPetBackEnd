@@ -59,13 +59,13 @@
                 </template>
                 <Menu-item name="/user/list">用户列表</Menu-item>
               </Submenu>
-              <Submenu name="6">
+              <Submenu name="complaint">
                 <template slot="title">
                   <Icon type="compose"></Icon>
                   <span class="layout-text">投诉反馈</span>
                 </template>
-                <Menu-item name="6-1">待处理</Menu-item>
-                <Menu-item name="6-2">已处理</Menu-item>
+                <Menu-item name="/complaint/list">待处理</Menu-item>
+                <Menu-item name="/complaint/handle">已处理</Menu-item>
               </Submenu>
             </Menu>
           </i-col>

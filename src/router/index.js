@@ -12,6 +12,7 @@ import orderOne from '@/components/orderOne'
 import orderDeal from '@/components/orderDeal'
 import userList from '@/components/userList'
 import userOne from '@/components/userOne'
+import complaintList from '@/components/complaintList'
 
 Vue.use(Router)
 
@@ -75,6 +76,11 @@ export default new Router({
           path: 'user/list/one',
           component: userOne,
           name: 'user_one'
+        },
+        {
+          path: 'complaint/list',
+          component: complaintList,
+          name: 'complaint_list'
         }
       ]
     }

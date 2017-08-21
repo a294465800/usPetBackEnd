@@ -235,7 +235,6 @@
           title: '提示',
           content: '<p>确定审核通过所选的店铺吗？</p>',
           onOk: () => {
-          	console.log(this.passIds)
             this.$Message.info('已全部通过')
           },
           onCancel: () => {
