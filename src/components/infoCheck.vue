@@ -1,6 +1,9 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
 
+  <div class="info-check" v-else>
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>信息审核</Breadcrumb-item>
@@ -31,13 +34,13 @@
       <Button type="info" @click="passAll">通过</Button>
     </div>
     <div class="info-check-table">
-      <Table :columns="columns10" :data="data9" :size="tableSize" @on-selection-change="selectAll"></Table>
+      <Table :columns="columns" :data="infoChecks" :size="tableSize" @on-selection-change="selectAll"></Table>
     </div>
     <!--/内容展示-->
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -45,6 +48,12 @@
 </template>
 
 <style>
+  .demo-spin-col{
+    height: 100px;
+    position: relative;
+    border: 1px solid #eee;
+  }
+
   .info-check {
     position: relative;
     height: 100%;
@@ -92,7 +101,8 @@
         search: '',
         select: 'name',
         tableSize: 'default',
-        columns10: [
+        loading: true,
+        columns: [
           {
             type: 'selection',
             width: 60,
@@ -121,25 +131,25 @@
           },
           {
             title: '地区',
-            key: 'area',
+            key: 'location',
             align: 'center',
             sortable: true
           },
           {
             title: '联系电话',
-            key: 'tel',
+            key: 'phone',
             width: 150,
             align: 'center'
           },
           {
             title: '联系人',
-            key: 'owner',
+            key: 'contact',
             width: 100,
             align: 'center'
           },
           {
             title: '申请时间',
-            key: 'time',
+            key: 'createtime',
             align: 'center',
             width: 150,
             sortable: true
@@ -170,7 +180,7 @@
                   },
                   on: {
                     click: () => {
-                      this.passOne(params.index, params.id)
+                      this.passOne(params.index, params.row.id)
                     }
                   }
                 }, '通过')
@@ -178,63 +188,32 @@
             }
           }
         ],
-        data9: [
-          {
-            id: 1,
-            name: '萌萌哒宠物店',
-            area: '广东省广州市桥',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-03-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 2,
-            name: '萌萌哒宠物店',
-            area: '广东省广州番禺',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-06-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 3,
-            name: '萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店',
-            area: '山东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-11-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 4,
-            name: '萌萌哒宠物店',
-            area: '广东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-01-19',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-        ],
-        passIds: []
+        infoChecks: [],
+        passIds: [],
+        page: 1,
+        pages: 0,
       }
     },
     created(){
+      this.$http({
+        url: this.$global.url + 'web/stores',
+        data: this.$qs.stringify({
+          page: 1,
+          state: 0
+        })
+      }).then(res => {
+        if('200' === res.data.code){
+        	this.loading = false
+          this.pages = res.data.pages
+        	this.infoChecks = res.data.data
+        }else {
+        	this.$Message(res.data.msg)
+        }
+      })
     },
     methods: {
       changePage(e){
+      	console.log(e)
       },
 
       /**
@@ -256,6 +235,7 @@
           title: '提示',
           content: '<p>确定审核通过所选的店铺吗？</p>',
           onOk: () => {
+          	console.log(this.passIds)
             this.$Message.info('已全部通过')
           },
           onCancel: () => {
@@ -275,12 +255,13 @@
       },
 
       passOne(index, id){
-      	const that = this
+        const that = this
         this.$Modal.confirm({
           title: '提示',
           content: '确定审核通过该店铺吗？',
           onOk(){
-          	that.data9.splice(index, 1)
+          	console.log(id)
+            that.infoChecks.splice(index, 1)
             this.$Message.info('已通过')
           },
           onCancel(){

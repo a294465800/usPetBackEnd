@@ -26,7 +26,7 @@
     margin: auto;
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   }
 
   .login-title-head {
@@ -51,7 +51,7 @@
     font-size: 16px;
   }
 
-  .copy-right-link,.copy-right-link:hover,.copy-right-link:visited,.copy-right-link:focus {
+  .copy-right-link, .copy-right-link:hover, .copy-right-link:visited, .copy-right-link:focus {
     text-decoration: none;
   }
 </style>
@@ -101,23 +101,23 @@
       const validatePassCheck = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'))
-        }else {
+        } else {
           callback()
         }
       }
 
       return {
-      	message: '小主帮主程序后台',
+        message: '小主帮主程序后台',
         loginInfo: {
           username: '',
           password: ''
         },
         ruleLogin: {
           username: [
-            { validator: validatePass, trigger: 'blur' }
+            {validator: validatePass, trigger: 'blur'}
           ],
           password: [
-            { validator: validatePassCheck, trigger: 'blur' }
+            {validator: validatePassCheck, trigger: 'blur'}
           ]
         }
       }
@@ -127,7 +127,7 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
 
-          	this.$http({
+            this.$http({
               url: this.$global.url + 'web/login',
               method: 'POST',
               data: this.$qs.stringify({
@@ -135,12 +135,11 @@
                 password: this.loginInfo.password
               })
             }).then(res => {
-            	if('200' === res.data.code){
-                  this.$Message.success('登录成功')
-//                this.$router.push()
-                let cookies = window.document.cookie
-                console.log(cookies, 'cookie')
-              }else{
+              if ('200' === res.data.code) {
+                this.$Message.success('登录成功')
+                sessionStorage.username = this.loginInfo.username
+                this.$router.push({path: '/'})
+              } else {
                 this.$Message.warning(res.data.msg)
               }
             })

@@ -214,10 +214,9 @@
       }
     },
     created(){
-    	this.user = sessionStorage.user
+    	this.user = sessionStorage.username
       this.active = this.$route.path
       this.open[0] = this.$route.name.split('_')[0]
-      console.log(this.active, this.open[0])
     },
     computed: {
       iconSize () {
@@ -234,19 +233,18 @@
           title: '提示',
           content: '<p>确定退出登录吗？</p>',
           onOk: () => {
-          	sessionStorage.user = ''
-          	this.$router.push('/login')
-          },
-          onCancel: () => {
-          	this.$http({
+            this.$http({
               url: this.$global.url + 'web/logout',
             }).then(res => {
-            	if('200' === res.data.code){
-            		console.log('退出')
+              if('200' === res.data.code){
+                sessionStorage.username = ''
+                this.$router.push({name: 'Login'})
               }else {
-            		this.$Message.warning(res.data.msg)
+                this.$Message.warning(res.data.msg)
               }
             })
+          },
+          onCancel: () => {
             this.$Message.info('取消了');
           }
         })

@@ -8,30 +8,30 @@
     <Row class="expand-row">
       <Col span="8">
         <span class="expand-key">月营业额：</span>
-        <span class="expand-value">{{ row.monthMoney }}</span>
+        <span class="expand-value">{{ row.shop_sales }}</span>
       </Col>
       <Col span="8">
         <span class="expand-key">固定顾客：</span>
-        <span class="expand-value">{{ row.customer }}</span>
+        <span class="expand-value">{{ row.customs_number }}</span>
       </Col>
       <Col span="8">
         <span class="expand-key">主要经营：</span>
-        <span class="expand-value">{{ row.main }}</span>
+        <span class="expand-value" v-for="item in row.business">{{ item }}、</span>
       </Col>
     </Row>
     <Row>
-      <!--<Col span="8">
-      <span class="expand-key">月营业额：</span>
-      <span class="expand-value">{{ row.monthMoney }}</span>
-      </Col>-->
       <Col span="8">
+        <span class="expand-key">店铺全名：</span>
+        <span class="expand-value">{{ row.full_name }}</span>
+      </Col>
+      <Col span="12">
         <span class="expand-key">详细地址：</span>
         <span class="expand-value">{{ row.address }}</span>
       </Col>
-<!--      <Col span="8">
-      <span class="expand-key">申请时间：</span>
-      <span class="expand-value">{{ row.time }}</span>
-      </Col>-->
+      <Col span="4">
+        <span class="expand-key">营业时间：</span>
+        <span class="expand-value">{{ row.time }}</span>
+      </Col>
     </Row>
   </div>
 </template>

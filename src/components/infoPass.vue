@@ -1,5 +1,10 @@
 <template>
-  <div class="info-check">
+
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -31,13 +36,13 @@
       <Button type="error" @click="closeAll">关闭</Button>
     </div>
     <div class="info-check-table">
-      <Table :columns="columns10" :data="data9" :size="tableSize" @on-selection-change="selectAll"></Table>
+      <Table :columns="columns" :data="infoPasses" :size="tableSize" @on-selection-change="selectAll"></Table>
     </div>
     <!--/内容展示-->
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -90,7 +95,8 @@
         search: '',
         select: 'name',
         tableSize: 'default',
-        columns10: [
+        loading: true,
+        columns: [
           {
             type: 'selection',
             width: 60,
@@ -119,25 +125,25 @@
           },
           {
             title: '地区',
-            key: 'area',
+            key: 'location',
             align: 'center',
             sortable: true
           },
           {
             title: '联系电话',
-            key: 'tel',
+            key: 'phone',
             width: 150,
             align: 'center'
           },
           {
             title: '联系人',
-            key: 'owner',
+            key: 'contact',
             width: 100,
             align: 'center'
           },
           {
             title: '申请时间',
-            key: 'time',
+            key: 'createtime',
             align: 'center',
             width: 150,
             sortable: true
@@ -165,7 +171,7 @@
             }
           }
         ],
-        data9: [
+        infoPasses: [
           {
             id: 1,
             name: '萌萌哒宠物店',
@@ -215,10 +221,27 @@
             customer: '300人左右'
           },
         ],
+        pages: 0,
+        page: 1,
         passIds: []
       }
     },
     created(){
+      this.$http({
+        url: this.$global.url + 'web/stores',
+        data: this.$qs.stringify({
+          page: 1,
+          state: 1
+        })
+      }).then(res => {
+        if('200' === res.data.code){
+          this.loading = false
+          this.pages = res.data.pages
+          this.infoPasses = res.data.data
+        }else {
+          this.$Message(res.data.msg)
+        }
+      })
     },
     methods: {
       changePage(e){
@@ -242,10 +265,10 @@
       closeAll(){
         this.$Modal.confirm({
           title: '提示',
-          content: '<p>确定审核通过所选的店铺吗？</p>',
+          content: '<p>确定关闭所选的店铺吗？</p>',
           onOk: () => {
             console.log(this.passIds)
-            this.$Message.info('已全部通过');
+            this.$Message.info('已全部关闭');
           },
           onCancel: () => {
             this.$Message.warning('已取消');

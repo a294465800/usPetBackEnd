@@ -25,9 +25,8 @@ Vue.config.productionTip = false
 * */
 //sessionStorage.user判断登录状态
 router.beforeEach((to, from, next) => {
-  let cookies = window.document
-  console.log(cookies, 'cookie')
-  if (sessionStorage.user){
+  // let cookies = window.document
+  if (sessionStorage.username){
     if(to.name === 'Login'){
       next(from.path)
     }else {
