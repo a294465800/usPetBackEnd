@@ -23,8 +23,8 @@ Vue.config.productionTip = false
 /**
 * 全局钩子，当未登录时自动跳转登录
 * */
-//sessionStorage.user判断登录状态
-/*router.beforeEach((to, from, next) => {
+//sessionStorage.username判断登录状态
+router.beforeEach((to, from, next) => {
   // let cookies = window.document
   if (sessionStorage.username){
     if(to.name === 'Login'){
@@ -39,7 +39,7 @@ Vue.config.productionTip = false
       next()
     }
   }
-})*/
+})
 
 /* eslint-disable no-new */
 new Vue({

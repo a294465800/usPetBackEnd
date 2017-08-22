@@ -6,18 +6,26 @@
 <template>
   <div>
     <Row class="expand-row" style="margin-bottom: 0">
-      <Col span="8">
-      <span class="expand-key"><b>购买次数：</b></span>
-        <span class="expand-value">{{ row.buy_times }}次</span>
+      <Col span="12">
+        <span class="expand-key"><b>购买次数：</b></span>
+        <span class="expand-value">{{ row.buyCount }}次</span>
       </Col>
-      <Col span="8">
-      <span class="expand-key"><b>总成交量：</b></span>
-        <span class="expand-value">{{ row.deal }}元</span>
+      <Col span="12">
+        <span class="expand-key"><b>商品备注：</b></span>
+        <span class="expand-value">{{ row.remark || '无'}}</span>
       </Col>
-      <!--<Col span="8">
-      <span class="expand-key"><b>光顾店铺：</b></span>
-        <span class="expand-value" v-for="item in row.stores">{{ item }}、</span>
-      </Col>-->
+    </Row>
+    <Row>
+      <Col span="24">
+        <span class="expand-key"><b>商品描述：</b></span>
+        <span class="expand-value">{{ row.description || '无'}}</span>
+      </Col>
+    </Row>
+    <Row>
+      <Col span="24">
+        <span class="expand-key"><b>商品提醒：</b></span>
+        <span class="expand-value">{{ row.notice || '无'}}</span>
+      </Col>
     </Row>
   </div>
 </template>

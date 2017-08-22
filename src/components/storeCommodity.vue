@@ -5,7 +5,7 @@
     <Breadcrumb>
       <Breadcrumb-item>店铺管理</Breadcrumb-item>
       <Breadcrumb-item href="/store/list">店铺列表</Breadcrumb-item>
-      <Breadcrumb-item>{{store.name}}</Breadcrumb-item>
+      <Breadcrumb-item>店铺商品 — {{store.name}}</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 

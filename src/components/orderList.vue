@@ -11,11 +11,11 @@
     <!--搜索框-->
     <div class="search-wrap">
       <Input v-model="search" placeholder="请输入">
-        <Select v-model="select" slot="prepend" style="width: 80px">
-          <Option value="commodity_id">商品ID</Option>
-          <Option value="commodity">商品名称</Option>
-        </Select>
-        <Button slot="append" icon="ios-search"></Button>
+      <Select v-model="select" slot="prepend" style="width: 80px">
+        <Option value="1">商品ID</Option>
+        <Option value="2">商品名称</Option>
+      </Select>
+      <Button slot="append" icon="ios-search" @click="commoditySearch" @keyup.enter="commoditySearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -36,7 +36,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -99,7 +99,7 @@
     data() {
       return {
         search: '',
-        select: 'commodity_id',
+        select: '1',
         tableSize: 'default',
         columns: [
           {
@@ -122,17 +122,25 @@
           },
           {
             title: '所属店铺',
-            key: 'store',
+            key: 'store_name',
             align: 'center',
             sortable: true
           },
           {
             title: '商品名称',
-            key: 'commodity',
+            key: 'title',
             align: 'center'
           },
           {
             title: '价格/(元)',
+            key: 'entity_price',
+            width: 150,
+            align: 'center',
+            sortable: true,
+            className: 'table-price'
+          },
+          {
+            title: '原价/(元)',
             key: 'price',
             width: 150,
             align: 'center',
@@ -141,7 +149,7 @@
           },
           {
             title: '订单日期',
-            key: 'create_time',
+            key: 'createtime',
             align: 'center',
             width: 250,
             sortable: true
@@ -159,8 +167,8 @@
                     size: 'small'
                   },
                   on: {
-                  	click: () => {
-                  		this.goToCommodity(params.row)
+                    click: () => {
+                      this.goToCommodity(params.row)
                     }
                   }
                 }, '查看所有')
@@ -206,21 +214,70 @@
             buy_times: 240
           },
         ],
-        passIds: []
+        passIds: [],
+
+        /**
+         * 请求相关
+         * */
+        page: 1,
+        pages: 0
       }
     },
     created(){
+      this.getOrderList(1)
     },
     methods: {
-      changePage(e){
-        console.log(e)
+    	/**
+    	* 页码跳转
+    	* */
+      changePage(page){
+        //1是id,2是名称
+        if('1' === this.select){
+          this.getOrderList(page, this.search)
+        }else if('2' === this.select){
+          this.getOrderList(page, '', this.search)
+        }
       },
 
       /**
-      * 单条商品跳转
+       * 页面请求封装
+       * */
+      getOrderList(page, id, name){
+        const data = {
+          page: page,
+          product_id: id || '',
+          product_name: name || '',
+        }
+        this.$http.get(this.$global.url + 'web/products', {
+          params: data,
+        }).then(res => {
+          if ('200' === res.data.code) {
+            this.pages = Number(res.data.pages)
+            this.orderList = res.data.data
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.$Message.error(error)
+        })
+      },
+
+      /**
+      * 商品搜索
       * */
+      commoditySearch(){
+      	//1是id,2是名称
+      	if('1' === this.select){
+          this.getOrderList(1, this.search)
+        }else if('2' === this.select){
+      		this.getOrderList(1, '', this.search)
+        }
+      },
+
+      /**
+       * 单条商品跳转
+       * */
       goToCommodity(params){
-//      	console.log(params)
         this.$router.push({name: 'order_one', params: {order: params}})
       }
     }
