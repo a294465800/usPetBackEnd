@@ -9,13 +9,13 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="commoditySearch">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="1">商品ID</Option>
-        <Option value="2">商品名称</Option>
+        <Option value="product_id">商品ID</Option>
+        <Option value="product_name">商品名称</Option>
       </Select>
-      <Button slot="append" icon="ios-search" @click="commoditySearch" @keyup.enter="commoditySearch"></Button>
+      <Button slot="append" icon="ios-search" @click="commoditySearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -36,7 +36,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -99,7 +99,7 @@
     data() {
       return {
         search: '',
-        select: '1',
+        select: 'product_id',
         tableSize: 'default',
         columns: [
           {
@@ -132,7 +132,7 @@
             align: 'center'
           },
           {
-            title: '价格/(元)',
+            title: '金额/(元)',
             key: 'entity_price',
             width: 150,
             align: 'center',
@@ -220,44 +220,39 @@
          * 请求相关
          * */
         page: 1,
-        pages: 0
+        count: 0,
+        request: {
+        	page: 1
+        }
       }
     },
     created(){
-      this.getOrderList(1)
+      this.getCommodityList(1)
     },
     methods: {
     	/**
     	* 页码跳转
     	* */
       changePage(page){
-        //1是id,2是名称
-        if('1' === this.select){
-          this.getOrderList(page, this.search)
-        }else if('2' === this.select){
-          this.getOrderList(page, '', this.search)
-        }
+      	this.request.page = page
+        this.getCommodityList(this.request)
       },
 
       /**
        * 页面请求封装
        * */
-      getOrderList(page, id, name){
-        const data = {
-          page: page,
-          product_id: id || '',
-          product_name: name || '',
-        }
+      getCommodityList(data){
         this.$http.get(this.$global.url + 'web/products', {
           params: data,
         }).then(res => {
           if ('200' === res.data.code) {
-            this.pages = Number(res.data.pages)
+            this.count = Number(res.data.pages)
             this.orderList = res.data.data
           } else {
             this.$Message.error(res.data.msg)
           }
         }).catch(error => {
+          this.orderList = []
           this.$Message.error(error)
         })
       },
@@ -266,12 +261,10 @@
       * 商品搜索
       * */
       commoditySearch(){
-      	//1是id,2是名称
-      	if('1' === this.select){
-          this.getOrderList(1, this.search)
-        }else if('2' === this.select){
-      		this.getOrderList(1, '', this.search)
-        }
+      	const tmp = {}
+      	tmp[this.select] = this.search
+        this.request = tmp
+        this.getCommodityList(tmp)
       },
 
       /**
