@@ -1,5 +1,9 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -101,6 +105,7 @@
         search: '',
         select: 'product_id',
         tableSize: 'default',
+        loading: true,
         columns: [
           {
             title: 'ID',
@@ -176,44 +181,7 @@
             }
           }
         ],
-        orderList: [
-          {
-            id: 1,
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            create_time: '2017-06-20',
-            price: '50',
-            deal: '5000',
-            buy_times: 24
-          },
-          {
-            id: 2,
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            create_time: '2017-04-11',
-            price: '23',
-            deal: '5000',
-            buy_times: 4
-          },
-          {
-            id: 3,
-            commodity: '狗狗洗澡',
-            store: '丑丑哒宠物店',
-            create_time: '2017-03-20',
-            price: '553',
-            deal: '15000',
-            buy_times: 1
-          },
-          {
-            id: 4,
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            create_time: '2017-12-20',
-            price: '150',
-            deal: '500',
-            buy_times: 240
-          },
-        ],
+        orderList: [],
         passIds: [],
 
         /**
@@ -246,6 +214,7 @@
           params: data,
         }).then(res => {
           if ('200' === res.data.code) {
+          	this.loading = false
             this.count = Number(res.data.pages)
             this.orderList = res.data.data
           } else {
@@ -261,7 +230,9 @@
       * 商品搜索
       * */
       commoditySearch(){
-      	const tmp = {}
+      	const tmp = {
+      		page: 1
+        }
       	tmp[this.select] = this.search
         this.request = tmp
         this.getCommodityList(tmp)

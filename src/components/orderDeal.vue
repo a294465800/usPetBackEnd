@@ -50,7 +50,12 @@
 </style>
 
 <template>
-  <div class="info-check">
+
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -101,11 +106,10 @@
 	export default {
 		data() {
 			return {
-        commodity: null,
         tableSize: 'default',
         search: '',
         select: 'number',
-        aaa: '',
+        loading: true,
         columns: [
           {
             title: '单号',
@@ -177,28 +181,7 @@
             sortable: true
           }
         ],
-        userBuys: [
-          {
-            id: 1,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
-            price: 50,
-            create_time: '2017-03-20',
-            score: 2
-          },
-          {
-            id: 2,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18658411125,
-            price: 150,
-            create_time: '2017-03-20',
-            score: 4
-          },
-        ],
+        userBuys: [],
 
         /**
         * 请求所需数据
@@ -236,9 +219,9 @@
         	params: data,
         }).then( res => {
         	if('200' === res.data.code){
+        		this.loading = false
         		this.userBuys = res.data.data
-            this.count = res.data.count
-            console.log(res)
+            this.count = Number(res.data.count)
           }else {
         		this.$Message.error(res.data.msg)
           }

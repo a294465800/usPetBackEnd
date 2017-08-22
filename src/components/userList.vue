@@ -1,5 +1,9 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -9,14 +13,13 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="userSearch">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="id">ID</Option>
-        <Option value="store">店铺</Option>
-        <Option value="name">昵称</Option>
+        <Option value="id">用户ID</Option>
+        <Option value="nickname">昵称</Option>
       </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" @click="userSearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -37,7 +40,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -90,8 +93,9 @@
     data() {
       return {
         search: '',
-        select: 'name',
+        select: 'nickname',
         tableSize: 'default',
+        loading: true,
         columns10: [
           {
             title: 'ID',
@@ -119,24 +123,24 @@
           },
           {
             title: '最近购买商品',
-            key: 'commodity',
+            key: 'recently_product',
             align: 'center'
           },
           {
             title: '最近购买店铺',
-            key: 'store',
+            key: 'recently_store',
             align: 'center',
             sortable: true
           },
           {
             title: '联系电话',
-            key: 'tel',
+            key: 'phone',
             width: 150,
             align: 'center'
           },
           {
-            title: '订单日期',
-            key: 'create_time',
+            title: '创建时间',
+            key: 'created_at',
             align: 'center',
             width: 200,
             sortable: true
@@ -163,60 +167,25 @@
             }
           }
         ],
-        userList: [
-          {
-            id: 1,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店','萌萌哒宠物店', 'QQ哒宠物店','萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
-          },
-          {
-            id: 2,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
-          },
-          {
-            id: 3,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '丑丑哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
-          },
-          {
-            id: 4,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
-            create_time: '2017-03-20',
-            cost: '5000',
-            stores: ['萌萌哒宠物店', 'QQ哒宠物店'],
-            buy_times: 24
-          },
-        ],
-        passIds: []
+        userList: [],
+        passIds: [],
+
+        /**
+        * 请求参数
+        * */
+        request: {
+        	page: 1
+        },
+        count: 0,
       }
     },
     created(){
+    	this.getUserList(this.request)
     },
     methods: {
-      changePage(e){
-        console.log(e)
+      changePage(page){
+      	this.request.page = page
+        this.getUserList(this.request)
       },
 
       /**
@@ -224,6 +193,37 @@
       * */
       goToUserOne(user){
       	this.$router.push({name: 'user_one', params: {id: user.row.id, user: user.row}})
+      },
+
+      /**
+      * 请求封装
+      * */
+      getUserList(data){
+      	this.$http.get(this.$global.url + 'web/users', {
+      		params: data,
+      	}).then( res => {
+      		if('200' === res.data.code){
+      			this.loading = false
+      			this.userList = res.data.data
+            this.count = Number(res.data.count)
+          }else {
+      			this.$Message.error(res.data.msg)
+          }
+        }).catch( error => {
+        	this.$Message.error(error)
+        })
+      },
+
+      /**
+      * 用户搜索
+      * */
+      userSearch(){
+      	const tmp = {
+      		page: 1
+        }
+      	tmp[this.select] = this.search
+        this.request = tmp
+        this.getUserList(tmp)
       }
 
     }
