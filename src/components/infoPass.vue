@@ -14,13 +14,12 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="storeSearch">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
         <Option value="name">店铺名字</Option>
-        <Option value="area">地区</Option>
       </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" @click="storeSearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -42,7 +41,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -58,6 +57,7 @@
     display: flex;
     flex-direction: column;
   }
+
   .info-check-table {
     width: 100%;
     clear: both;
@@ -82,6 +82,7 @@
     margin-right: 20px;
     font-weight: normal;
   }
+
   .table-action button {
     margin: 0 30px;
   }
@@ -221,31 +222,20 @@
             customer: '300人左右'
           },
         ],
-        pages: 0,
-        page: 1,
-        passIds: []
+        count: 0,
+        request: {
+          page: 1,
+        },
+        passIds: [],
       }
     },
     created(){
-      this.$http({
-        url: this.$global.url + 'web/stores',
-        data: this.$qs.stringify({
-          page: 1,
-          state: 1
-        })
-      }).then(res => {
-        if('200' === res.data.code){
-          this.loading = false
-          this.pages = res.data.pages
-          this.infoPasses = res.data.data
-        }else {
-          this.$Message(res.data.msg)
-        }
-      })
+      this.getInfoPass(this.request)
     },
     methods: {
-      changePage(e){
-        console.log(e)
+      changePage(page){
+        this.request.page = page
+        this.getInfoCheck(this.request)
       },
 
       /**
@@ -253,7 +243,7 @@
        * */
       selectAll(groups){
         let arr = []
-        for(let i in groups){
+        for (let i in groups) {
           arr.push(groups[i].id)
         }
         this.passIds = arr
@@ -274,7 +264,40 @@
             this.$Message.warning('已取消');
           }
         })
+      },
+
+      /**
+       * 请求封装
+       * */
+      getInfoPass(data){
+        this.$http.get(this.$global.url + 'web/stores', {
+          params: data,
+        }).then(res => {
+          if ('200' === res.data.code) {
+            this.loading = false
+            this.count = Number(res.data.count)
+            this.infoPasses = res.data.data
+          } else {
+            this.$Message(res.data.msg)
+          }
+        }).catch(error => {
+          this.infoPasses = []
+          this.$Message.error(error)
+        })
+      },
+
+      /**
+       * 店铺搜索
+       * */
+      storeSearch(){
+        const tmp = {
+          page: 1,
+        }
+        tmp[this.select] = this.search
+        this.request = tmp
+        this.getInfoPass(tmp)
       }
-    }
+    },
+
   }
 </script>

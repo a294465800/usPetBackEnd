@@ -12,13 +12,12 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="storeSearch">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
         <Option value="name">店铺名字</Option>
-        <Option value="area">地区</Option>
       </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" @click="storeSearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -40,7 +39,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="pages" :current="page" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -190,30 +189,20 @@
         ],
         infoChecks: [],
         passIds: [],
-        page: 1,
-        pages: 0,
+        count: 0,
+        request: {
+        	page: 1,
+          state: 0
+        }
       }
     },
     created(){
-      this.$http({
-        url: this.$global.url + 'web/stores',
-        data: this.$qs.stringify({
-          page: 1,
-          state: 0
-        })
-      }).then(res => {
-        if('200' === res.data.code){
-        	this.loading = false
-          this.pages = res.data.pages
-        	this.infoChecks = res.data.data
-        }else {
-        	this.$Message(res.data.msg)
-        }
-      })
+      this.getInfoCheck(this.request)
     },
     methods: {
-      changePage(e){
-      	console.log(e)
+      changePage(page){
+      	this.request.page = page
+      	this.getInfoCheck(this.request)
       },
 
       /**
@@ -259,7 +248,6 @@
           title: '提示',
           content: '确定审核通过该店铺吗？',
           onOk(){
-          	console.log(id)
             that.infoChecks.splice(index, 1)
             this.$Message.info('已通过')
           },
@@ -267,6 +255,38 @@
             this.$Message.warning('已取消')
           }
         })
+      },
+
+      /**
+      * 请求封装
+      * */
+      getInfoCheck(data){
+      	this.$http.get(this.$global.url + 'web/stores', {
+      		params: data,
+      	}).then(res => {
+          if('200' === res.data.code){
+            this.loading = false
+            this.count = res.data.pages
+            this.infoChecks = res.data.data
+          }else {
+            this.$Message(res.data.msg)
+          }
+        }).catch(error => {
+        	this.infoChecks = []
+        	this.$Message.error(error)
+        })
+      },
+
+      /**
+      * 店铺搜索
+      * */
+      storeSearch(){
+      	const tmp = {
+      		page: 1,
+        }
+        tmp[this.select] = this.search
+        this.request = tmp
+        this.getInfoCheck(tmp)
       }
     }
   }
