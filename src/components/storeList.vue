@@ -141,7 +141,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 120,
+            width: 200,
             align: 'center',
             render: (h, params) => {
               return h('div', [
@@ -155,7 +155,18 @@
                   		this.goToStore(params.row)
                     }
                   }
-                }, '查看流水')
+                }, '查看流水'),
+                h('Button', {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  },
+                  on: {
+                    click: ()=> {
+                      this.goToStoreCommodity(params.row)
+                    }
+                  }
+                }, '查看商品')
               ])
             }
           }
@@ -225,6 +236,13 @@
       * */
       goToStore(store){
       	this.$router.push({name: 'store_chart', params: {store: store}})
+      },
+
+      /**
+      * 查看店铺拥有商品
+      * */
+      goToStoreCommodity(store){
+      	this.$router.push({name: 'store_commodity', params: {store: store}})
       }
     }
   }

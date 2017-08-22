@@ -7,6 +7,7 @@ import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import storeList from '@/components/storeList'
 import storeChart from '@/components/storeChart'
+import storeCommodity from '@/components/storeCommodity'
 import orderList from '@/components/orderList'
 import orderOne from '@/components/orderOne'
 import orderDeal from '@/components/orderDeal'
@@ -52,6 +53,11 @@ export default new Router({
           path: 'store/list/account',
           component: storeChart,
           name: 'store_chart'
+        },
+        {
+          path: 'store/list/commodity',
+          component: storeCommodity,
+          name: 'store_commodity'
         },
         {
           path: 'order/list',

@@ -153,7 +153,7 @@
   .account-chart {
     border-left: 1px solid #ff963d;
     border-bottom: 1px solid #ff963d;
-    width: 85%;
+    width: 90%;
     height: 300px;
     margin: 0 auto;
     position: relative;
