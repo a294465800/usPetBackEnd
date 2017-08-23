@@ -5,6 +5,7 @@ import Index from '@/components/Index'
 import indexChart from '@/components/indexChart'
 import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
+import storeCategory from '@/components/storeCategory'
 import storeList from '@/components/storeList'
 import storeChart from '@/components/storeChart'
 import storeCommodity from '@/components/storeCommodity'
@@ -43,6 +44,11 @@ export default new Router({
           path: 'info/pass',
           component: infoPass,
           name: 'info_pass'
+        },
+        {
+          path: 'store/category',
+          component: storeCategory,
+          name: 'store_category'
         },
         {
           path: 'store/list',

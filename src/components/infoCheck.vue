@@ -167,11 +167,10 @@
                   },
                   on: {
                     click: () => {
-                      console.log(params)
                       this.show(params.index)
                     }
                   }
-                }, '查看'),
+                }, '添加分类'),
                 h('Button', {
                   props: {
                     type: 'text',
