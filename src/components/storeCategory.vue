@@ -1,12 +1,12 @@
 <style>
-  .info-check {
+  /*.info-check {
     position: relative;
     height: 100%;
     width: 100%;
     padding: 15px;
     display: flex;
     flex-direction: column;
-  }
+  }*/
   .info-check-table {
     width: 100%;
     clear: both;
@@ -46,7 +46,7 @@
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>店铺管理</Breadcrumb-item>
-      <Breadcrumb-item>店铺列表</Breadcrumb-item>
+      <Breadcrumb-item>店铺分类</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -54,9 +54,8 @@
     <div class="search-wrap">
       <Input v-model="search" placeholder="请输入">
         <Select v-model="select" slot="prepend" style="width: 80px">
-          <Option value="store_name">店铺名字</Option>
-          <Option value="area">地区</Option>
-          <Option value="store_owner">联系人</Option>
+          <Option value="id">ID</Option>
+          <Option value="name">分类名</Option>
         </Select>
         <Button slot="append" icon="ios-search"></Button>
       </Input>
@@ -92,8 +91,9 @@
     data() {
       return {
         search: '',
-        select: 'store_name',
+        select: 'id',
         tableSize: 'default',
+        loading: true,
         columns: [
           {
             title: 'ID',
@@ -213,7 +213,7 @@
       * 新建分类
       * */
       newCategory(){
-
+        this.$router.push({name: 'store_category_upload'})
       }
     }
   }
