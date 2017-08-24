@@ -1,4 +1,3 @@
-
 <style>
   .index-chart {
     position: relative;
@@ -150,6 +149,13 @@
   }
 
   /*图表*/
+  .canvas-chart-warp {
+    width: 90%;
+    height: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+
   .account-chart {
     border-left: 1px solid #ff963d;
     border-bottom: 1px solid #ff963d;
@@ -167,7 +173,8 @@
     display: flex;
     flex-direction: column;
   }
-  .account-chart-left li{
+
+  .account-chart-left li {
     font-size: 15px;
     height: 50px;
     font-weight: 600;
@@ -187,15 +194,15 @@
     align-items: flex-end;
   }
 
-  .account-chart-bottom li{
+  .account-chart-bottom li {
     margin-left: 20px;
     width: 20px;
     height: 30px;
     position: relative;
-    background: linear-gradient(to bottom, #ff963d 50%,#fffb89 100%);
+    background: linear-gradient(to bottom, #ff963d 50%, #fffb89 100%);
   }
 
-  .account-chart-num,.account-chart-day {
+  .account-chart-num, .account-chart-day {
     position: absolute;
     width: 100%;
     left: 0;
@@ -281,7 +288,7 @@
         </div>
       </div>
       <!--日流水图表-->
-      <div class="account-chart" :style="{height: biggest * 50 + 'px'}" v-if="daily.length">
+      <!--<div class="account-chart" :style="{height: biggest * 50 + 'px'}" v-if="daily.length">
         <ul class="account-chart-left">
           <li v-for="n in biggest">{{biggest - n}}</li>
         </ul>
@@ -293,7 +300,12 @@
         </ul>
         <div class="account-chart-title">金额（万元）</div>
       </div>
-      <div class="account-no" v-else>暂无数据</div>
+      <div class="account-no" v-else>暂无数据</div>-->
+      <!--<div class="canvas-chart-warp">-->
+        <!--<canvas id="us_chart"></canvas>-->
+      <!--</div>-->
+
+      <line-example></line-example>
       <!--/日流水图表-->
     </div>
     <!--/日流水-->
@@ -301,6 +313,7 @@
 </template>
 
 <script>
+  import barExample from './expandChart.vue'
   export default {
     data() {
       return {
@@ -313,8 +326,8 @@
         now: new Date().getFullYear() + '-' + new Date().getMonth(),
 
         /**
-        * 模拟数据
-        * */
+         * 模拟数据
+         * */
         daily: [
           {
             account: 2.5,
@@ -685,13 +698,18 @@
       }
     },
 
+    components: {
+      barExample
+    },
+
     created(){
-    	this.calChartDay()
+      this.calChartDay()
+      this.renderChart()
     },
 
     /**
-    * 计算百分比
-    * */
+     * 计算百分比
+     * */
     computed: {
       yearPercentage(){
         return Math.min(Number(((this.yearPayment * 100) / (this.yearTargetNum * 100) * 100).toFixed(2)), 100)
@@ -703,10 +721,41 @@
     methods: {
 
       /**
+       * 生成图表
+       * */
+      renderChart(){
+        const canvas = document.getElementById('us_chart')
+        const that = this
+        const chart = new Chart(canvas, {
+        	type: 'bar',
+          data: {
+        		labels: [12, 19, 3, 5, 2, 3, 6, 12],
+            datasets: [{
+              label: '金额（万元）',
+              data: [12, 19, 3, 5, 2, 3, 6, 12],
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255,99,132,1)',
+              borderWidth: 1,
+              borderSkipped: 'left'
+            }],
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            },
+          }
+        })
+      },
+
+      /**
        * 选择年目标
        * */
       yearTarget(){
-      	const that = this
+        const that = this
         this.$Modal.confirm({
           render: (h) => {
             return h('Input', {
@@ -732,10 +781,10 @@
       },
 
       /**
-      * 选择月目标
-      * */
+       * 选择月目标
+       * */
       monthTarget(){
-      	const that = this
+        const that = this
         this.$Modal.confirm({
           render: (h) => {
             return h('Input', {
@@ -761,14 +810,14 @@
       },
 
       /**
-      * 计算图表的显示最小单位
-      * */
+       * 计算图表的显示最小单位
+       * */
       calChartDay(){
-      	let daily = this.daily,
-            tmp = 0
+        let daily = this.daily,
+          tmp = 0
         daily.forEach(item => {
-        	if(tmp < item.account){
-        		tmp = item.account
+          if (tmp < item.account) {
+            tmp = item.account
           }
         })
         this.biggest = Math.ceil(tmp) + 1
@@ -778,9 +827,9 @@
        * 日期切换流水
        * */
       changeDate(e){
-      	if(this.daily === this.dailys){
+        if (this.daily === this.dailys) {
           this.daily = this.dailyt
-        }else {
+        } else {
           this.daily = []
         }
         this.calChartDay()
