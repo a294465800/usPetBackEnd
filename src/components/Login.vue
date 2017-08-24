@@ -142,6 +142,11 @@
               } else {
                 this.$Message.warning(res.data.msg)
               }
+            }).catch(error => {
+              this.$Modal.error({
+                title: '提示',
+                content: error
+              })
             })
           } else {
             this.$Message.error('请确认填写信息!')

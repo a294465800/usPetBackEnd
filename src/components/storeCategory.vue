@@ -1,12 +1,12 @@
 <style>
-  /*.info-check {
+  .info-check {
     position: relative;
     height: 100%;
     width: 100%;
     padding: 15px;
     display: flex;
     flex-direction: column;
-  }*/
+  }
   .info-check-table {
     width: 100%;
     clear: both;
@@ -144,7 +144,7 @@
                   },
                   on: {
           					click: () => {
-                      this.show(params.index)
+                      this.changeCategory(params.row)
                     }
                   }
                 }, '修改'),
@@ -155,7 +155,7 @@
                   },
                   on: {
                     click: () => {
-                      this.show(params.index)
+                      this.deleteCategory(params.index)
                     }
                   }
                 }, '删除')
@@ -202,10 +202,18 @@
       /**
        * 操作
        * */
-      show (index) {
-        this.$Modal.info({
-          title: '店铺信息',
-          content: '测试' + index
+      changeCategory (params) {
+      	this.$router.push({name: 'store_category_upload', params: {category: params}})
+      },
+
+      deleteCategory(index){
+      	this.$Modal.confirm({
+          title: '提示',
+          content: '<p>确认删除该店铺分类吗？</p>',
+          onOk:() => {
+          	this.stores.splice(index, 1)
+          },
+
         })
       },
 
