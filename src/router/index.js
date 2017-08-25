@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/Login'
 import Index from '@/components/Index'
 import indexChart from '@/components/indexChart'
+import infoCheckOne from '@/components/infoCheckOne'
 import infoCheck from '@/components/infoCheck'
 import infoPass from '@/components/infoPass'
 import storeCategory from '@/components/storeCategory'
@@ -40,6 +41,11 @@ export default new Router({
           path: 'info/check',
           component: infoCheck,
           name: 'info_check'
+        },
+        {
+          path: 'info/check/one',
+          component: infoCheckOne,
+          name: 'info_check_one'
         },
         {
           path: 'info/pass',

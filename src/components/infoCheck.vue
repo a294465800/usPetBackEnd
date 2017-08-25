@@ -47,12 +47,6 @@
 </template>
 
 <style scoped>
-  .demo-spin-col{
-    height: 100px;
-    position: relative;
-    border: 1px solid #eee;
-  }
-
   .info-check {
     position: relative;
     height: 100%;
@@ -167,10 +161,10 @@
                   },
                   on: {
                     click: () => {
-                      this.show(params.index)
+                      this.showAllNews(params.row)
                     }
                   }
-                }, '添加分类'),
+                }, '查看'),
                 h('Button', {
                   props: {
                     type: 'text',
@@ -234,11 +228,8 @@
       /**
        * 操作
        * */
-      show (index) {
-        this.$Modal.info({
-          title: '店铺信息',
-          content: '测试'
-        })
+      showAllNews (params) {
+      	this.$router.push({name: 'info_check_one', params: params})
       },
 
       passOne(index, id){
@@ -265,7 +256,7 @@
       	}).then(res => {
           if('200' === res.data.code){
             this.loading = false
-            this.count = res.data.pages
+            this.count = res.data.count
             this.infoChecks = res.data.data
           }else {
             this.$Message(res.data.msg)
