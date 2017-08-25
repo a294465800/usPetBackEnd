@@ -37,7 +37,10 @@
 </style>
 
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -90,6 +93,7 @@
         search: '',
         select: 'store_name',
         tableSize: 'default',
+        loading: false,
         columns: [
           {
             title: '店铺ID',

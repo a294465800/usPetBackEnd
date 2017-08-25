@@ -28,18 +28,13 @@
               <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
             </template>
           </div>
-          <Upload
-            ref="upload"
-            :show-upload-list="false"
-            :default-file-list="defaultIcon"
-            :on-success="handleSuccess"
-            :format="['jpg','jpeg','png']"
+          <Upload ref="upload" :show-upload-list="false" :default-file-list="defaultIcon" :on-success="handleSuccess" :format="['jpg','jpeg','png']" :accept="'image/jpg,image/jpeg,image/png'"
             :max-size="2048"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             type="drag"
-            action="//jsonplaceholder.typicode.com/posts/"
+            :action="ipAddress"
             style="display: inline-block;width:58px;">
             <div style="width: 58px;height:58px;line-height: 58px;">
               <Icon type="camera" size="20"></Icon>
@@ -52,7 +47,7 @@
 
         </div>
         <Form-item style="margin-top:30px;">
-          <Button type="primary">提交</Button>
+          <Button type="primary" @click="addNewCategory">提交</Button>
           <Button type="ghost" style="margin-left: 8px">取消</Button>
         </Form-item>
       </Form>
@@ -65,20 +60,23 @@
       return {
         submitData: {
         	name: '',
-          baseurl: ''
+          baseurl: '',
+          id: 0,
         },
         defaultIcon: [],
         visible: false,
         uploadList: [],
         currentImg: null,
+        ipAddress: this.$global.url + 'web/upload',
       }
     },
     created(){
     	const category = this.$route.params.category
       if(category){
-    		this.defaultIcon = [{name: category.name, url: category.src}]
+    		this.defaultIcon = [{name: category.name, url: category.url}]
         this.submitData.name = category.name
         this.submitData.baseurl = category.url
+        this.submitData.id = category.id
       }
     },
     methods: {
@@ -103,9 +101,9 @@
       * 上传成功
       * */
       handleSuccess (res, file) {
-        // 因为上传过程为实例，这里模拟添加 url
-        file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-        file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+        file.url = 'http://192.168.3.22:8888/' + res.baseurl
+        file.name = this.submitData.name
+        this.submitData.baseurl = res.baseurl
       },
 
       /**
@@ -131,7 +129,7 @@
       /**
       * 上传之前操作
       * */
-      handleBeforeUpload () {
+      handleBeforeUpload (file) {
         const check = this.uploadList.length < 1;
         if (!check) {
           this.$Notice.warning({
@@ -139,6 +137,33 @@
           });
         }
         return check;
+      },
+
+      /**
+      * 表单提交
+      * */
+      addNewCategory(){
+      	if(!this.submitData.baseurl || !this.submitData.name){
+      		this.$Modal.error({
+            title: '提示',
+            content: '分类名和图片不能为空！',
+          })
+        }else{
+          this.$http.post(this.$global.url + 'web/store/type/add', this.$qs.stringify(this.submitData))
+            .then(res => {
+          	if('200' === res.data.code){
+          		this.$Message.success('添加成功')
+              this.$router.push({name: 'store_category'})
+            }else {
+          		this.$Message.warning(res.data.msg)
+            }
+          }).catch(error => {
+            this.$Modal.error({
+              title: '提示',
+              content: error,
+            })
+          })
+        }
       }
     },
     mounted () {

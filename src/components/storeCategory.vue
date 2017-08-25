@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
   }
+
   .info-check-table {
     width: 100%;
     clear: both;
@@ -31,8 +32,9 @@
     margin-right: 20px;
     font-weight: normal;
   }
+
   .table-action button {
-    margin: 0 30px;
+    margin-left: 30px;
   }
 
   .store-category-icon {
@@ -41,7 +43,11 @@
 </style>
 
 <template>
-  <div class="info-check">
+
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -53,11 +59,11 @@
     <!--搜索框-->
     <div class="search-wrap">
       <Input v-model="search" placeholder="请输入">
-        <Select v-model="select" slot="prepend" style="width: 80px">
-          <Option value="id">ID</Option>
-          <Option value="name">分类名</Option>
-        </Select>
-        <Button slot="append" icon="ios-search"></Button>
+      <Select v-model="select" slot="prepend" style="width: 80px">
+        <Option value="id">ID</Option>
+        <Option value="name">分类名</Option>
+      </Select>
+      <Button slot="append" icon="ios-search"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -71,15 +77,16 @@
         <Radio label="small">小</Radio>
       </Radio-group>
       <Button type="info" @click="newCategory">新建分类</Button>
+      <Button type="warning" @click="deleteAll">删除</Button>
     </div>
     <div class="info-check-table">
-      <Table :columns="columns" :data="stores" :size="tableSize"></Table>
+      <Table :columns="columns" :data="storeCategory" :size="tableSize" @on-selection-change="selectAll"></Table>
     </div>
     <!--/内容展示-->
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -93,8 +100,13 @@
         search: '',
         select: 'id',
         tableSize: 'default',
-        loading: true,
+        loading: false,
         columns: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
           {
             title: 'ID',
             key: 'id',
@@ -127,23 +139,23 @@
           },
           {
             title: '创建时间',
-            key: 'time',
+            key: 'createtime',
             align: 'center',
             sortable: true
           },
           {
-          	title: '操作',
+            title: '操作',
             width: 200,
             align: 'center',
             render: (h, params) => {
-          		return h('div', [
-          			h('Button', {
-          				props: {
-          					type: 'text',
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'text',
                     size: 'small',
                   },
                   on: {
-          					click: () => {
+                    click: () => {
                       this.changeCategory(params.row)
                     }
                   }
@@ -155,7 +167,7 @@
                   },
                   on: {
                     click: () => {
-                      this.deleteCategory(params.index)
+                      this.deleteCategory(params)
                     }
                   }
                 }, '删除')
@@ -163,38 +175,42 @@
             }
           }
         ],
-        stores: [
-          {
-            id: 1,
-            name: '美容',
-            time: '2017-03-20',
-            src: 'http://freefilehostings.com/wp-content/uploads/2016/02/2540002121dcc6e84b3.jpg'
-          },
-          {
-            id: 2,
-            name: '洗澡',
-            time: '2017-03-20',
-            src: 'http://freefilehostings.com/wp-content/uploads/2016/02/2540002121dcc6e84b3.jpg'
-          },
-          {
-            id: 3,
-            name: '活体',
-            time: '2017-03-20',
-            src: 'http://freefilehostings.com/wp-content/uploads/2016/02/2540002121dcc6e84b3.jpg'
-          },
-          {
-            id: 4,
-            name: '可爱',
-            time: '2017-03-20',
-            src: 'http://freefilehostings.com/wp-content/uploads/2016/02/2540002121dcc6e84b3.jpg'
-          },
-        ],
-        passIds: []
+        storeCategory: [],
+        delIds: [],
+        count: 0,
+        request: {
+          page: 1,
+        }
       }
     },
     created(){
+      this.getStoreCategory(this.request)
     },
     methods: {
+
+      /**
+       * 请求封装
+       * */
+      getStoreCategory(data){
+        this.$http.get(this.$global.url + 'web/store/types/list', {
+          params: data,
+        }).then(res => {
+          if ('200' === res.data.code) {
+            this.loading = false
+            this.count = res.data.count
+            this.storeCategory = res.data.data
+          } else {
+            this.$Message(res.data.msg)
+          }
+        }).catch(error => {
+          this.storeCategory = []
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
       changePage(e){
         console.log(e)
       },
@@ -202,24 +218,82 @@
       /**
        * 操作
        * */
+      //修改
       changeCategory (params) {
-      	this.$router.push({name: 'store_category_upload', params: {category: params}})
+        this.$router.push({name: 'store_category_upload', params: {category: params}})
       },
-
-      deleteCategory(index){
-      	this.$Modal.confirm({
+      //删除
+      deleteCategory(params){
+        this.$Modal.confirm({
           title: '提示',
           content: '<p>确认删除该店铺分类吗？</p>',
-          onOk:() => {
-          	this.stores.splice(index, 1)
+          onOk: () => {
+            this.storeCategoryDelete([params.row.id], () => {
+              this.storeCategory.splice(params.index, 1)
+            })
           },
+          onCancel: () => {
+
+          }
 
         })
       },
 
       /**
-      * 新建分类
-      * */
+       * 全选
+       * */
+      selectAll(groups){
+        let arr = []
+        for (let i in groups) {
+          arr.push(groups[i].id)
+        }
+        this.delIds = arr
+      },
+
+      /**
+       * 全选通过
+       * */
+      deleteAll(){
+        if (this.delIds.length) {
+          this.$Modal.confirm({
+            title: '提示',
+            content: '<p>确定删除全部所选分类吗？</p>',
+            onOk: () => {
+              this.storeCategoryDelete([].concat(this.delIds), () => {
+                this.getStoreCategory({page: 1})
+              })
+            },
+            onCancel: () => {
+              this.$Message.warning('已取消')
+            }
+          })
+        }
+      },
+
+      /**
+       * 删除请求
+       * */
+      storeCategoryDelete(ids, cb){
+        this.$http.post(this.$global.url + 'web/store/type/delete', this.$qs.stringify({
+          id: ids
+        })).then(res => {
+          if ('200' === res.data.code) {
+            this.$Message.success('删除成功')
+            typeof cb === 'function' && cb()
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
+      /**
+       * 新建分类
+       * */
       newCategory(){
         this.$router.push({name: 'store_category_upload'})
       }
