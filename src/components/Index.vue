@@ -87,7 +87,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   /*
   * index通用样式
   */

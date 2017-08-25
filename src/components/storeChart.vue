@@ -1,5 +1,4 @@
-
-<style>
+<style scoped>
   .index-chart {
     position: relative;
     height: 100%;
@@ -151,23 +150,22 @@
 
   /*图表*/
   .account-chart {
-    border-left: 1px solid #ff963d;
-    border-bottom: 1px solid #ff963d;
     width: 90%;
-    height: 300px;
+    height: 360px;
     margin: 0 auto;
     position: relative;
   }
 
-  .account-chart-left {
+  /*.account-chart-left {
     position: absolute;
     width: 30px;
     bottom: -2px;
     left: -30px;
     display: flex;
     flex-direction: column;
-  }
-  .account-chart-left li{
+  }*/
+
+  /*.account-chart-left li {
     font-size: 15px;
     height: 50px;
     font-weight: 600;
@@ -175,9 +173,9 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
-  }
+  }*/
 
-  .account-chart-bottom {
+  /*.account-chart-bottom {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -186,16 +184,16 @@
     justify-content: flex-start;
     align-items: flex-end;
   }
-
-  .account-chart-bottom li{
+*/
+  /*.account-chart-bottom li {
     margin-left: 20px;
     width: 20px;
     height: 30px;
     position: relative;
-    background: linear-gradient(to bottom, #ff963d 50%,#fffb89 100%);
-  }
+    background: linear-gradient(to bottom, #ff963d 50%, #fffb89 100%);
+  }*/
 
-  .account-chart-num,.account-chart-day {
+  /*.account-chart-num, .account-chart-day {
     position: absolute;
     width: 100%;
     left: 0;
@@ -219,7 +217,7 @@
     top: -20px;
     right: 20px;
     color: #ff963d;
-  }
+  }*/
 
   .account-no {
     font-size: 16px;
@@ -276,25 +274,19 @@
         <div class="account-time-picker">
           <Row>
             <Col span="12">
-            <Date-picker type="month" :placeholder="now" style="width: 200px" :editable="pickerEditable" @on-change="changeDate"></Date-picker>
+            <Date-picker type="month" :placeholder="now" style="width: 200px" :editable="pickerEditable"
+                         @on-change="changeDate"></Date-picker>
             </Col>
           </Row>
         </div>
       </div>
       <!--日流水图表-->
-      <div class="account-chart" :style="{height: biggest * 50 + 'px'}" v-if="daily.length">
-        <ul class="account-chart-left">
-          <li v-for="n in biggest">{{biggest - n}}</li>
-        </ul>
-        <ul class="account-chart-bottom">
-          <li v-for="(day, index) in daily" :style="{height: day.account * 55 + 'px'}">
-            <span class="account-chart-num">{{day.account}}</span>
-            <span class="account-chart-day">{{day.day}}</span>
-          </li>
-        </ul>
-        <div class="account-chart-title">金额（万元）</div>
+      <div class="account-chart" v-if="dail">
+        <bar-chart :chart-data="dataCollection" :options="options"></bar-chart>
       </div>
-      <div class="account-no" v-else>暂无数据</div>
+      <div v-else>
+        <div class="account-no">暂无数据</div>
+      </div>
       <!--/日流水图表-->
     </div>
     <!--/日流水-->
@@ -302,6 +294,7 @@
 </template>
 
 <script>
+  import BarChart from './barChart'
   export default {
     data() {
       return {
@@ -313,136 +306,15 @@
         pickerEditable: false,
         now: new Date().getFullYear() + '-' + new Date().getMonth(),
         store: null,
+        options: this.$global.options,
 
         /**
-        * 模拟数据
-        * */
-        daily: [
-          {
-            account: 2.5,
-            day: 1
-          },
-          {
-            account: 1.5,
-            day: 2
-          },
-          {
-            account: 4.5,
-            day: 3
-          },
-          {
-            account: 5.5,
-            day: 4
-          },
-          {
-            account: .5,
-            day: 5
-          },
-          {
-            account: 2.5,
-            day: 6
-          },
-          {
-            account: 1.5,
-            day: 7
-          },
-          {
-            account: 4.5,
-            day: 8
-          },
-          {
-            account: 5.5,
-            day: 9
-          },
-          {
-            account: .5,
-            day: 10
-          },
-          {
-            account: 2.5,
-            day: 11
-          },
-          {
-            account: 1.5,
-            day: 12
-          },
-          {
-            account: 4.5,
-            day: 13
-          },
-          {
-            account: 5.5,
-            day: 14
-          },
-          {
-            account: .5,
-            day: 15
-          },
-          {
-            account: 2.5,
-            day: 16
-          },
-          {
-            account: 1.5,
-            day: 17
-          },
-          {
-            account: 4.5,
-            day: 18
-          },
-          {
-            account: 5.5,
-            day: 19
-          },
-          {
-            account: .5,
-            day: 20
-          },
-          {
-            account: 2.5,
-            day: 21
-          },
-          {
-            account: 1.5,
-            day: 22
-          },
-          {
-            account: 4.5,
-            day: 23
-          },
-          {
-            account: 5.5,
-            day: 24
-          },
-          {
-            account: .5,
-            day: 25
-          },
-          {
-            account: 2.5,
-            day: 26
-          },
-          {
-            account: 1.5,
-            day: 27
-          },
-          {
-            account: 4.5,
-            day: 28
-          },
-          {
-            account: 5.5,
-            day: 29
-          },
-          {
-            account: .5,
-            day: 30
-          },
-          {
-            account: .5,
-            day: 31
-          }
-        ],
+         * 模拟数据
+         * */
+        days: [],
+        dail: [10, 11, 20, 12, 50, 2, 51, 11, 1, 11, 21, 1],
+        daily: [10, 11, 20, 12, 50, 2, 51, 11, 1, 11, 21, 1,2,5,23,2,12,3,14,23,23,2,1,5,23,3,11,22,23,42,12],
+        dails: [2, 13, 20, 12, 22, 2, 11, 14, 1, 11, 21, 8],
         dailyt: [
           {
             account: 2.5,
@@ -557,151 +429,43 @@
             day: 28
           },
         ],
-        dailys: [
-          {
-            account: 3.2,
-            day: 1
-          },
-          {
-            account: 2.4,
-            day: 2
-          },
-          {
-            account: 4.8,
-            day: 3
-          },
-          {
-            account: 5.5,
-            day: 4
-          },
-          {
-            account: .5,
-            day: 5
-          },
-          {
-            account: 3.2,
-            day: 6
-          },
-          {
-            account: 2.4,
-            day: 7
-          },
-          {
-            account: 6.4,
-            day: 8
-          },
-          {
-            account: 5.5,
-            day: 9
-          },
-          {
-            account: .5,
-            day: 10
-          },
-          {
-            account: 3.2,
-            day: 11
-          },
-          {
-            account: 2.4,
-            day: 12
-          },
-          {
-            account: 4.8,
-            day: 13
-          },
-          {
-            account: 5.5,
-            day: 14
-          },
-          {
-            account: .5,
-            day: 15
-          },
-          {
-            account: 3.2,
-            day: 16
-          },
-          {
-            account: 1.5,
-            day: 17
-          },
-          {
-            account: 4.5,
-            day: 18
-          },
-          {
-            account: 5.5,
-            day: 19
-          },
-          {
-            account: .5,
-            day: 20
-          },
-          {
-            account: 2.5,
-            day: 21
-          },
-          {
-            account: 1.5,
-            day: 22
-          },
-          {
-            account: 4.5,
-            day: 23
-          },
-          {
-            account: 5.5,
-            day: 24
-          },
-          {
-            account: .5,
-            day: 25
-          },
-          {
-            account: 2.5,
-            day: 26
-          },
-          {
-            account: 1.5,
-            day: 27
-          },
-          {
-            account: 4.5,
-            day: 28
-          },
-          {
-            account: 5.5,
-            day: 29
-          },
-          {
-            account: .5,
-            day: 30
-          },
-          {
-            account: .5,
-            day: 31
-          }
-        ],
-        biggest: 0
+        biggest: 0,
       }
+    },
+    components: {
+      BarChart
     },
 
     created(){
-    	this.calChartDay()
       this.store = this.$route.params.store
+      this.days = [].concat(this.$global.days)
+      this.days.length = 12
     },
 
     /**
-    * 计算百分比
-    * */
+     * 计算百分比
+     * */
     computed: {
       yearPercentage(){
         return Math.min(Number(((this.yearPayment * 100) / (this.yearTargetNum * 100) * 100).toFixed(2)), 100)
       },
       monthPercentage(){
         return Math.min(Number(((this.monthPayment * 100) / (this.monthTargetNum * 100) * 100).toFixed(2)), 100)
-      }
+      },
+
+      dataCollection(){
+        return {
+          labels: this.days,
+          datasets: [
+            {
+              label: this.now,
+              backgroundColor: '#ff963d',
+              data: this.dail,
+            }
+          ],
+        }
+      },
+
     },
     methods: {
 
@@ -709,7 +473,7 @@
        * 选择年目标
        * */
       yearTarget(){
-      	const that = this
+        const that = this
         this.$Modal.confirm({
           render: (h) => {
             return h('Input', {
@@ -735,10 +499,10 @@
       },
 
       /**
-      * 选择月目标
-      * */
+       * 选择月目标
+       * */
       monthTarget(){
-      	const that = this
+        const that = this
         this.$Modal.confirm({
           render: (h) => {
             return h('Input', {
@@ -764,29 +528,17 @@
       },
 
       /**
-      * 计算图表的显示最小单位
-      * */
-      calChartDay(){
-      	let daily = this.daily,
-            tmp = 0
-        daily.forEach(item => {
-        	if(tmp < item.account){
-        		tmp = item.account
-          }
-        })
-        this.biggest = Math.ceil(tmp) + 1
-      },
-
-      /**
        * 日期切换流水
        * */
       changeDate(e){
-      	if(this.daily === this.dailys){
-          this.daily = this.dailyt
-        }else {
-          this.daily = this.dailys
+        this.now = e
+        this.days = [].concat(this.$global.days)
+        if (this.dail === this.daily) {
+          this.dail = null
+        } else {
+          this.dail = this.daily
+          this.days.length =  this.daily.length
         }
-        this.calChartDay()
       }
     }
   }

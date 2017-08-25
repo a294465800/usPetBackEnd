@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   .demo-spin-col{
     height: 100px;
     position: relative;
