@@ -156,7 +156,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 120,
+            width: 200,
             align: 'center',
             render: (h, params) => {
               return h('div', [
@@ -272,7 +272,10 @@
           }
         }).catch(error => {
         	this.infoChecks = []
-        	this.$Message.error(error)
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
         })
       },
 

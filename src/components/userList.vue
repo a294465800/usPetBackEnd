@@ -210,7 +210,10 @@
       			this.$Message.error(res.data.msg)
           }
         }).catch( error => {
-        	this.$Message.error(error)
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
         })
       },
 

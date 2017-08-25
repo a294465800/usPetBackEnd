@@ -222,7 +222,10 @@
           }
         }).catch(error => {
           this.orderList = []
-          this.$Message.error(error)
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
         })
       },
 

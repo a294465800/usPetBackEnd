@@ -172,56 +172,7 @@
             }
           }
         ],
-        infoPasses: [
-          {
-            id: 1,
-            name: '萌萌哒宠物店',
-            area: '广东省广州市桥',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-03-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 2,
-            name: '萌萌哒宠物店',
-            area: '广东省广州番禺',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-06-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 3,
-            name: '萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店',
-            area: '山东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-11-20',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-          {
-            id: 4,
-            name: '萌萌哒宠物店',
-            area: '广东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-01-19',
-            owner: '张飞',
-            main: '活体、服务、医疗',
-            monthMoney: '10万',
-            customer: '300人左右'
-          },
-        ],
+        infoPasses: [],
         count: 0,
         request: {
           page: 1,
@@ -282,7 +233,10 @@
           }
         }).catch(error => {
           this.infoPasses = []
-          this.$Message.error(error)
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
         })
       },
 

@@ -1,5 +1,8 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -9,19 +12,19 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
-      <Input v-model="search" placeholder="请输入">
-      <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="id">ID</Option>
-        <Option value="name">昵称</Option>
-      </Select>
-      <Button slot="append" icon="ios-search"></Button>
-      </Input>
-    </div>
+    <!--<div class="search-wrap">-->
+    <!--<Input v-model="search" placeholder="请输入">-->
+    <!--<Select v-model="select" slot="prepend" style="width: 80px">-->
+    <!--<Option value="id">ID</Option>-->
+    <!--<Option value="name">昵称</Option>-->
+    <!--</Select>-->
+    <!--<Button slot="append" icon="ios-search"></Button>-->
+    <!--</Input>-->
+    <!--</div>-->
     <!--/搜索框-->
 
     <!--内容展示-->
-    <div class="table-action">
+    <div class="table-action" style="margin-top: 30px">
       <b>表格尺寸</b>
       <Radio-group v-model="tableSize" type="button">
         <Radio label="large">大</Radio>
@@ -37,7 +40,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -85,13 +88,13 @@
 </style>
 
 <script>
-  import expandRow from './expandComplaintList.vue'
   export default {
     data() {
       return {
         search: '',
         select: 'id',
         tableSize: 'default',
+        loading: true,
         columns: [
           {
             type: 'selection',
@@ -106,37 +109,19 @@
             sortable: true
           },
           {
-            type: 'expand',
-            width: 50,
-            render: (h, params) => {
-              return h(expandRow, {
-                props: {
-                  row: params.row
-                }
-              })
-            }
-          },
-          {
-            title: '用户昵称',
-            key: 'name',
+            title: '投诉内容',
+            key: 'content',
             align: 'center',
-            width: 200
-          },
-          {
-            title: '投诉店铺',
-            key: 'store',
-            align: 'center',
-            sortable: true
           },
           {
             title: '联系电话',
-            key: 'tel',
+            key: 'phone',
             width: 150,
             align: 'center'
           },
           {
             title: '投诉日期',
-            key: 'create_time',
+            key: 'createtime',
             align: 'center',
             width: 200,
             sortable: true
@@ -209,14 +194,48 @@
           },
         ],
         okIds: [],
-        replay: ''
+        replay: '',
+        count: 0,
+        request: {
+          page: 1,
+          state: 0
+        }
       }
     },
     created(){
+      this.getFeedBack(this.request)
     },
     methods: {
-      changePage(e){
-        console.log(e)
+
+      /**
+       * 请求封装
+       * */
+      getFeedBack(data){
+        this.$http.get(this.$global.url + 'web/list/feedback', {
+          params: data,
+        }).then(res => {
+          if ('200' === res.data.code) {
+            this.loading = false
+            this.count = res.data.count
+            this.complaintList = res.data.data
+          } else {
+            this.$Message(res.data.msg)
+          }
+        }).catch(error => {
+          this.complaintList = []
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
+      /**
+       * 页码
+       * */
+      changePage(page){
+        this.request.page = page
+        this.getFeedBack(this.request)
       },
 
       /**
@@ -227,7 +246,8 @@
           title: '提示',
           content: '<p>确定把该投诉标记为已处理吗？</p>',
           onOk: () => {
-          	this.complaintList.splice(data.index, 1)
+            this.complaintList.splice(data.index, 1)
+            this.handleRequest([data.row.id])
             this.$Message.info('已处理');
           },
           onCancel: () => {
@@ -237,9 +257,9 @@
       },
 
       /**
-      * 回复投诉用户
-      * */
-      replayFunc(data){
+       * 回复投诉用户
+       * */
+      /*replayFunc(data){
         this.$Modal.confirm({
           render: (h) => {
             return h('Input', {
@@ -255,17 +275,17 @@
             })
           },
           onOk: () => {
-          	this.$Message.info('已回复')
+            this.$Message.info('已回复')
           },
           onCancel: () => {
-          	this.$Message.warning('已取消')
+            this.$Message.warning('已取消')
           }
         })
-      },
+      },*/
 
       /**
-      * 全选
-      * */
+       * 全选
+       * */
       selectAll(all){
         let arr = []
         for (let i in all) {
@@ -275,21 +295,45 @@
       },
 
       /**
-      * 批量处理
-      * */
+       * 批量处理
+       * */
       handleAll(){
-      	if(this.okIds.length){
-      		this.$Modal.confirm({
+        if (this.okIds.length) {
+          this.$Modal.confirm({
             title: '提示',
             content: '<p>确定把所有选中内容标记为“已处理”吗？</p>',
             onOk: () => {
-            	this.$Message.info('已全部处理')
+              const arr = [].concat(this.okIds)
+              this.handleRequest(arr)
+              this.$Message.info('已全部处理')
             },
             onCancel: () => {
-            	this.$Message.warning('已取消')
+              this.$Message.warning('已取消')
             }
           })
         }
+      },
+
+      /**
+       * 处理，请求
+       * */
+      handleRequest(ids){
+        this.$http.post(this.$global.url + 'web/feedback/finish', this.$qs.stringify({
+          id: ids,
+        })).then(res => {
+          if ('200' === res.data.code) {
+            this.$Message.info('已全部处理')
+            this.getFeedBack({page: 1, satate: 0,})
+          } else {
+            this.$Message(res.data.msg)
+          }
+        }).catch(error => {
+          this.complaintList = []
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
       }
 
     }
