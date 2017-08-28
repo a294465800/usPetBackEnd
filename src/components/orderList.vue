@@ -95,6 +95,17 @@
     display: inline-block;
     margin-left: 5px;
   }
+
+
+  .ivu-table-tbody .table-count span {
+    color: #333;
+  }
+
+  .ivu-table-tbody .table-count span:after {
+    content: '次';
+    display: inline-block;
+    margin-left: 5px;
+  }
 </style>
 
 <script>
@@ -153,10 +164,18 @@
             className: 'table-price'
           },
           {
-            title: '订单日期',
+          	title: '购买次数',
+            key: 'buyCount',
+            width: 120,
+            align: 'center',
+            sortable: true,
+            className: 'table-count'
+          },
+          {
+            title: '创建日期',
             key: 'createtime',
             align: 'center',
-            width: 200,
+            width: 150,
             sortable: true
           },
           {
@@ -215,7 +234,7 @@
         }).then(res => {
           if ('200' === res.data.code) {
           	this.loading = false
-            this.count = Number(res.data.pages)
+            this.count = Number(res.data.count)
             this.orderList = res.data.data
           } else {
             this.$Message.error(res.data.msg)

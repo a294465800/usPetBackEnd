@@ -65,13 +65,13 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="searchOrderOne">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
         <Option value="order_id">单号</Option>
-        <Option value="name">昵称</Option>
+        <Option value="nickname">昵称</Option>
       </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" @click="searchOrderOne"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -217,6 +217,18 @@
       changePage(page){
       	this.request.page = page
       	this.getAllOrder(this.request)
+      },
+
+      /**
+      * 搜索
+      * */
+      searchOrderOne(){
+      	let tmp = {
+      		page: 1,
+        }
+        tmp[this.select] = this.search
+        this.request = tmp
+        this.getAllOrder(this.request)
       },
     }
 	}

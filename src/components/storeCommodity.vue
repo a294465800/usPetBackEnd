@@ -92,6 +92,17 @@
     display: inline-block;
     margin-left: 5px;
   }
+
+
+  .ivu-table-tbody .table-count span {
+    color: #333;
+  }
+
+  .ivu-table-tbody .table-count span:after {
+    content: '次';
+    display: inline-block;
+    margin-left: 5px;
+  }
 </style>
 
 <script>
@@ -124,17 +135,17 @@
           },
           {
             title: '所属店铺',
-            key: 'store',
+            key: 'store_name',
             align: 'center',
             sortable: true
           },
           {
             title: '商品名称',
-            key: 'commodity',
+            key: 'title',
             align: 'center'
           },
           {
-            title: '价格/(元)',
+            title: '金额/(元)',
             key: 'price',
             width: 150,
             align: 'center',
@@ -142,8 +153,24 @@
             className: 'table-price'
           },
           {
+            title: '原价/(元)',
+            key: 'entity_price',
+            width: 150,
+            align: 'center',
+            sortable: true,
+            className: 'table-price'
+          },
+          {
+            title: '购买次数',
+            key: 'buyCount',
+            width: 120,
+            align: 'center',
+            sortable: true,
+            className: 'table-count'
+          },
+          {
             title: '创建日期',
-            key: 'create_time',
+            key: 'createtime',
             align: 'center',
             width: 250,
             sortable: true
