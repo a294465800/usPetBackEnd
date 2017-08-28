@@ -237,7 +237,7 @@
             this.count = res.data.count
             this.infoChecks = res.data.data
           }else {
-            this.$Message(res.data.msg)
+            this.$Message.error(res.data.msg)
           }
         }).catch(error => {
         	this.infoChecks = []

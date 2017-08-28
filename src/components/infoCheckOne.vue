@@ -160,7 +160,7 @@
             this.count = res.data.count
             this.categories = res.data.data
           } else {
-            this.$Message(res.data.msg)
+            this.$Message.error(res.data.msg)
           }
         }).catch(error => {
           this.categories = []

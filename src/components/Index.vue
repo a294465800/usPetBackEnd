@@ -246,7 +246,7 @@
             })
           },
           onCancel: () => {
-            this.$Message.info('取消了');
+            this.$Message.warning('取消了');
           }
         })
       },

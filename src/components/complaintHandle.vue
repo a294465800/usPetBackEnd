@@ -142,7 +142,7 @@
             this.count = res.data.count
             this.complaintList = res.data.data
           } else {
-            this.$Message(res.data.msg)
+            this.$Message.error(res.data.msg)
           }
         }).catch(error => {
           this.complaintList = []
