@@ -21,30 +21,29 @@ Vue.prototype.$global = globalData.globalData
 Vue.config.productionTip = false
 
 /**
-* 全局钩子，当未登录时自动跳转登录
-* */
+ * 全局钩子，当未登录时自动跳转登录
+ * */
 //sessionStorage.username判断登录状态
 router.beforeEach((to, from, next) => {
- // let cookies = window.document
- if (sessionStorage.username){
- if(to.name === 'Login'){
- next(from.path)
- }else {
- next()
- }
- }else {
- if (to.name !== 'Login'){
- next({path: '/login'})
- }else {
- next()
- }
- }
- })
+  if (sessionStorage.username) {
+    if (to.name === 'Login') {
+      next(from.path)
+    } else {
+      next()
+    }
+  } else {
+    if (to.name !== 'Login') {
+      next({path: '/login'})
+    } else {
+      next()
+    }
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: {App}
 })

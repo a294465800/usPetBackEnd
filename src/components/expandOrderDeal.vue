@@ -5,7 +5,7 @@
 </style>
 <template>
   <div>
-    <Row class="expand-row" style="margin-bottom: 0">
+    <Row class="expand-row">
       <Col span="12">
         <span class="expand-key"><b>商品id：</b></span>
         <span class="expand-value">{{ row.product_id }}</span>
@@ -15,7 +15,7 @@
         <span class="expand-value">{{ row.transaction_id}}</span>
       </Col>
     </Row>
-    <Row>
+    <Row class="expand-row">
       <Col span="24">
         <span class="expand-key"><b>商品描述：</b></span>
         <span class="expand-value">{{ row.description || '无'}}</span>

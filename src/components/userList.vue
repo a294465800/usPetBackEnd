@@ -47,29 +47,7 @@
   </div>
 </template>
 
-<style scoped>
-  .info-check {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .info-check-table {
-    width: 100%;
-    clear: both;
-    flex: 1;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding-right: 15px;
-  }
-
-  td.ivu-table-expanded-cell {
-    padding-left: 200px;
-    text-indent: 2em;
-  }
+<style>
 
   .table-action {
     margin-bottom: 20px;
@@ -88,7 +66,7 @@
 </style>
 
 <script>
-  import expandRow from './expandUserList.vue'
+  import expandRow from './expandInfoPass.vue'
   export default {
     data() {
       return {

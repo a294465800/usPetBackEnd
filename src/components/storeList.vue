@@ -96,10 +96,11 @@
         loading: false,
         columns: [
           {
-            title: '店铺ID',
+          	title: 'ID',
             key: 'id',
-            width: 150,
-            align: 'center'
+            width: 120,
+            align: 'center',
+            sortable: true
           },
           {
             type: 'expand',
@@ -119,25 +120,25 @@
           },
           {
             title: '地区',
-            key: 'area',
+            key: 'location',
             align: 'center',
             sortable: true
           },
           {
             title: '联系电话',
-            key: 'tel',
+            key: 'phone',
             width: 150,
             align: 'center'
           },
           {
             title: '联系人',
-            key: 'owner',
+            key: 'contact',
             width: 100,
             align: 'center'
           },
           {
-            title: '入驻时间',
-            key: 'time',
+            title: '申请时间',
+            key: 'createtime',
             align: 'center',
             width: 150,
             sortable: true
@@ -155,8 +156,8 @@
                     size: 'small'
                   },
                   on: {
-                  	click: ()=> {
-                  		this.goToStore(params.row)
+                  	click: () => {
+                  		this.goToStore(params.row.id)
                     }
                   }
                 }, '查看流水'),
@@ -166,12 +167,12 @@
                     size: 'small'
                   },
                   on: {
-                    click: ()=> {
-                      this.goToStoreCommodity(params.row)
+                    click: () => {
+                      this.goToStoreCommodity(params.row.id)
                     }
                   }
                 }, '查看商品')
-              ])
+              ]);
             }
           }
         ],
@@ -225,12 +226,46 @@
             owner: '白客'
           },
         ],
-        passIds: []
+        passIds: [],
+
+        count: 0,
+        request: {
+        	page: 1,
+          state: 1,
+        }
       }
     },
     created(){
+    	this.getInfoPass(this.request)
     },
     methods: {
+
+      /**
+       * 请求封装
+       * */
+      getInfoPass(data){
+        this.$http.get(this.$global.url + 'web/stores', {
+          params: data,
+        }).then(res => {
+          if ('200' === res.data.code) {
+            this.loading = false
+            this.count = Number(res.data.count)
+            this.stores = res.data.data
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.infoPasses = []
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
+      /**
+      * 页码
+      * */
       changePage(e){
         console.log(e)
       },

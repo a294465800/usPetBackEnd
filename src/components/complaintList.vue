@@ -219,7 +219,7 @@
             this.count = res.data.count
             this.complaintList = res.data.data
           } else {
-            this.$Message(res.data.msg)
+            this.$Message.error(res.data.msg)
           }
         }).catch(error => {
           this.complaintList = []
@@ -248,7 +248,7 @@
           onOk: () => {
             this.complaintList.splice(data.index, 1)
             this.handleRequest([data.row.id])
-            this.$Message.info('已处理');
+            this.$Message.success('已处理');
           },
           onCancel: () => {
             this.$Message.warning('已取消');
