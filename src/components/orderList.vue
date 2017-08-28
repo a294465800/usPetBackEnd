@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
   .info-check {
     position: relative;
     height: 100%;
@@ -156,13 +156,13 @@
             title: '订单日期',
             key: 'createtime',
             align: 'center',
-            width: 250,
+            width: 200,
             sortable: true
           },
           {
             title: '操作',
             key: 'action',
-            width: 200,
+            width: 120,
             align: 'center',
             render: (h, params) => {
               return h('div', [

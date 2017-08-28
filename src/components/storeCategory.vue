@@ -100,7 +100,7 @@
         search: '',
         select: 'id',
         tableSize: 'default',
-        loading: false,
+        loading: true,
         columns: [
           {
             type: 'selection',

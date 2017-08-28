@@ -176,6 +176,7 @@
         count: 0,
         request: {
           page: 1,
+          state: 1,
         },
         passIds: [],
       }
@@ -208,7 +209,6 @@
           title: '提示',
           content: '<p>确定关闭所选的店铺吗？</p>',
           onOk: () => {
-            console.log(this.passIds)
             this.$Message.info('已全部关闭');
           },
           onCancel: () => {

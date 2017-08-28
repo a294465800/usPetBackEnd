@@ -30,10 +30,9 @@
         <Radio label="default">中</Radio>
         <Radio label="small">小</Radio>
       </Radio-group>
-      <Button type="info" @click="passAll">通过</Button>
     </div>
     <div class="info-check-table">
-      <Table :columns="columns" :data="infoChecks" :size="tableSize" @on-selection-change="selectAll"></Table>
+      <Table :columns="columns" :data="infoChecks" :size="tableSize"></Table>
     </div>
     <!--/内容展示-->
 
@@ -96,11 +95,6 @@
         tableSize: 'default',
         loading: true,
         columns: [
-          {
-            type: 'selection',
-            width: 60,
-            align: 'center'
-          },
           {
             type: 'index',
             width: 60,
@@ -181,7 +175,6 @@
           }
         ],
         infoChecks: [],
-        passIds: [],
         count: 0,
         request: {
         	page: 1,
@@ -199,47 +192,32 @@
       },
 
       /**
-       * 全选
-       * */
-      selectAll(groups){
-        let arr = []
-        for (let i in groups) {
-          arr.push(groups[i].id)
-        }
-        this.passIds = arr
-      },
-
-      /**
-       * 全选通过
-       * */
-      passAll(){
-        this.$Modal.confirm({
-          title: '提示',
-          content: '<p>确定审核通过所选的店铺吗？</p>',
-          onOk: () => {
-            this.$Message.info('已全部通过')
-          },
-          onCancel: () => {
-            this.$Message.warning('已取消')
-          }
-        })
-      },
-
-      /**
        * 操作
        * */
       showAllNews (params) {
-      	this.$router.push({name: 'info_check_one', params: params})
+      	this.$router.push({name: 'info_check_one', params: {
+      		id: params.id
+        }})
       },
 
       passOne(index, id){
-        const that = this
         this.$Modal.confirm({
           title: '提示',
           content: '确定审核通过该店铺吗？',
-          onOk(){
-            that.infoChecks.splice(index, 1)
-            this.$Message.info('已通过')
+          onOk:() => {
+          	this.$http.get(this.$global.url + 'web/store/pass/' + id).then(res => {
+          		if('200' === res.data.code){
+                this.infoChecks.splice(index, 1)
+                this.$Message.info('已通过')
+              }else {
+          			this.$Message.error(res.data.msg)
+              }
+            }).catch(error => {
+            	this.$Modal.error({
+                title: '提示',
+                content: error
+              })
+            })
           },
           onCancel(){
             this.$Message.warning('已取消')
