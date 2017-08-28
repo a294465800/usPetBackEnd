@@ -225,7 +225,7 @@
     <!--日流水-->
     <div class="accountDaily">
       <div class="accountDaily-title">
-        <div class="account-tag">日流水</div>
+        <div class="account-tag">月流水</div>
         <div class="account-time-picker">
           <Row>
             <Col span="12">
@@ -236,23 +236,6 @@
         </div>
       </div>
       <!--日流水图表-->
-      <!--<div class="account-chart" :style="{height: biggest * 50 + 'px'}" v-if="daily.length">
-        <ul class="account-chart-left">
-          <li v-for="n in biggest">{{biggest - n}}</li>
-        </ul>
-        <ul class="account-chart-bottom">
-          <li v-for="(day, index) in daily" :style="{height: day.account * 55 + 'px'}">
-            <span class="account-chart-num">{{day.account}}</span>
-            <span class="account-chart-day">{{day.day}}</span>
-          </li>
-        </ul>
-        <div class="account-chart-title">金额（万元）</div>
-      </div>
-      <div class="account-no" v-else>暂无数据</div>-->
-      <!--<div class="canvas-chart-warp">-->
-      <!--<canvas id="us_chart"></canvas>-->
-      <!--</div>-->
-
       <div class="account-chart" v-if="dail">
         <bar-chart :chart-data="dataCollection" :options="options"></bar-chart>
       </div>

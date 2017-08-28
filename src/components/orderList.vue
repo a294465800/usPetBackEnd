@@ -190,7 +190,7 @@
         page: 1,
         count: 0,
         request: {
-        	page: 1
+        	page: 1,
         }
       }
     },

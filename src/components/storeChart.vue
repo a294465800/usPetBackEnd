@@ -270,7 +270,7 @@
     <!--日流水-->
     <div class="accountDaily">
       <div class="accountDaily-title">
-        <div class="account-tag">日流水</div>
+        <div class="account-tag">月流水</div>
         <div class="account-time-picker">
           <Row>
             <Col span="12">
@@ -468,6 +468,13 @@
 
     },
     methods: {
+
+    	/**
+    	* 请求封装
+    	* */
+    	getStoreAccount(id){
+    		this.$http.get(this.$global.url + 'web/store')
+      },
 
       /**
        * 选择年目标

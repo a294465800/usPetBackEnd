@@ -168,7 +168,7 @@
                   },
                   on: {
                     click: () => {
-                      this.goToStoreCommodity(params.row.id)
+                      this.goToStoreCommodity(params.row)
                     }
                   }
                 }, '查看商品')
@@ -224,8 +224,8 @@
       /**
       * 查看店铺具体流水
       * */
-      goToStore(store){
-      	this.$router.push({name: 'store_chart', params: {store: store}})
+      goToStore(id){
+      	this.$router.push({name: 'store_chart', params: {id: id}})
       },
 
       /**

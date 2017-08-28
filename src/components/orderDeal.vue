@@ -187,7 +187,7 @@
         * 请求所需数据
         * */
         request: {
-        	page: 1
+        	page: 1,
         },
         count: 0
 

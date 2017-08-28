@@ -50,13 +50,17 @@
 </style>
 
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>订单查询</Breadcrumb-item>
       <Breadcrumb-item href="/order/list">订单列表</Breadcrumb-item>
-      <Breadcrumb-item>{{commodity.commodity}} — {{commodity.store}}</Breadcrumb-item>
+      <Breadcrumb-item>{{commodity.title}} — {{commodity.store_name}}</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -88,7 +92,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -96,24 +100,37 @@
 </template>
 
 <script>
+  import expandRow from './expandOrderOne.vue'
 	export default {
 		data() {
 			return {
         commodity: null,
         tableSize: 'default',
+        loading: true,
         search: '',
         select: 'order_id',
         columns: [
           {
             title: '单号',
-            key: 'id',
+            key: 'number',
             align: 'center',
             width: 200,
             sortable: true
           },
           {
+            type: 'expand',
+            width: 50,
+            render: (h, params) => {
+              return h(expandRow, {
+                props: {
+                  row: params.row
+                }
+              })
+            }
+          },
+          {
             title: '商品名称',
-            key: 'commodity',
+            key: 'product_name',
             align: 'center'
           },
           {
@@ -138,53 +155,68 @@
           },
           {
             title: '买家',
-            key: 'name',
+            key: 'nickname',
             align: 'center'
           },
           {
             title: '电话',
-            key: 'tel',
+            key: 'phone',
             align: 'center'
           },
           {
             title: '订单日期',
-            key: 'create_time',
+            key: 'time',
             align: 'center',
             width: 200,
             sortable: true
           }
         ],
-        userBuys: [
-          {
-            id: 1,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            tel: 18456122214,
-            price: 50,
-            create_time: '2017-03-20',
-            score: 2
-          },
-          {
-            id: 2,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            tel: 18658411125,
-            price: 150,
-            create_time: '2017-03-20',
-            score: 4
-          },
-        ],
+        userBuys: [],
+
+        count: 0,
+        request: {
+        	page: 1,
+          product_id: this.$route.params.order.id
+        }
 
       }
 		},
 
     created(){
 			this.commodity = this.$route.params.order
+      this.getAllOrder(this.request)
     },
 
     methods: {
-      changePage(e){
-      	console.log(e)
+
+    	/**
+    	* 请求封装
+    	* */
+    	getAllOrder(data){
+    		this.$http.get(this.$global.url + 'web/orders', {
+    			params: data
+        }).then( res => {
+        	this.loading = false
+          if('200' === res.data.code){
+          	this.userBuys = res.data.data
+            this.count = res.data.count
+          } else {
+          	this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+        	this.$Modal.confirm({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
+      /**
+      * 页码
+      * */
+      changePage(page){
+      	this.request.page = page
+      	this.getAllOrder(this.request)
       },
     }
 	}

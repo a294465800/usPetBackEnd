@@ -37,7 +37,7 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
@@ -187,13 +187,41 @@
             buy_times: 240
           },
         ],
-        passIds: []
+
+        count: 0,
+        request: {
+        	page: 1,
+          store_id: this.$route.params.store.id
+        },
       }
     },
     created(){
     	this.store = this.$route.params.store
+      this.getStoreCommodity(this.request)
     },
     methods: {
+
+    	/**
+    	* 请求封装
+    	* */
+    	getStoreCommodity(data){
+    		this.$http.get(this.$global.url + 'web/products', {
+    			params: data
+        }).then( res => {
+        	if('200' === res.data.code){
+        		this.orderList = res.data.data
+            this.count = res.data.count
+          }else {
+        		this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+        	this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
       changePage(e){
         console.log(e)
       },
