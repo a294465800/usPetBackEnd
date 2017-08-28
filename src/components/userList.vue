@@ -146,7 +146,7 @@
                   },
                   on:{
                   	click: () => {
-                      this.goToUserOne(params)
+                      this.goToUserOne(params.row)
                     }
                   }
                 }, '查看所有')
@@ -179,7 +179,7 @@
       * 单用户跳转
       * */
       goToUserOne(user){
-      	this.$router.push({name: 'user_one', params: {id: user.row.id, user: user.row}})
+      	this.$router.push({name: 'user_one', params: {user: user}})
       },
 
       /**

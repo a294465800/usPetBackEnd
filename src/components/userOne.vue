@@ -1,11 +1,15 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
       <Breadcrumb-item>用户管理</Breadcrumb-item>
       <Breadcrumb-item href="/user/list">用户列表</Breadcrumb-item>
-      <Breadcrumb-item>{{user}}</Breadcrumb-item>
+      <Breadcrumb-item>{{user.name}}</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
 
@@ -37,14 +41,14 @@
 
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage" show-total></Page>
+        <Page :total="count" :current="request.page" @on-change="changePage" show-total></Page>
       </div>
     </div>
 
   </div>
 </template>
 
-<style scoped>
+<style>
   .info-check {
     position: relative;
     height: 100%;
@@ -84,8 +88,8 @@
   }
 
   .ivu-table-tbody .table-price span {
-       color: #ff963d;
-     }
+    color: #ff963d;
+  }
 
   .ivu-table-tbody .table-price span:after {
     content: '元';
@@ -95,27 +99,40 @@
 </style>
 
 <script>
-	export default {
-		data() {
-			return {
-				user: '',
+  import expandRow from './expandUserOne.vue'
+  export default {
+    data() {
+      return {
+      	loading: true,
+        user: '',
         tableSize: 'default',
         search: '',
         select: 'id',
         columns: [
           {
             title: '单号',
-            key: 'id',
+            key: 'number',
             align: 'center',
             width: 200
           },
           {
+          	type: 'expand',
+            width: 50,
+            render: (h, params) => {
+              return h(expandRow, {
+                props: {
+                  row: params.row
+                }
+              })
+            }
+          },
+          {
             title: '商品名称',
-            key: 'commodity',
+            key: 'product_name',
             align: 'center'
           },
           {
-            title: '价格/(元)',
+            title: '付款/(元)',
             key: 'price',
             width: 150,
             align: 'center',
@@ -123,54 +140,70 @@
           },
           {
             title: '购买店铺',
-            key: 'store',
+            key: 'store_name',
             align: 'center',
             sortable: true
           },
           {
+            title: '用户昵称',
+            key: 'nickname',
+            align: 'center'
+          },
+          {
             title: '电话',
-            key: 'tel',
+            key: 'phone',
             align: 'center'
           },
           {
             title: '订单日期',
-            key: 'create_time',
+            key: 'createtime',
             align: 'center',
             width: 200,
             sortable: true
           }
         ],
-        userBuys: [
-          {
-            id: 1,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18456122214,
-            price: 50,
-            create_time: '2017-03-20'
-          },
-          {
-            id: 2,
-            name: '爱吃鱼的猫',
-            commodity: '狗狗洗澡',
-            store: '萌萌哒宠物店',
-            tel: 18658411125,
-            price: 150,
-            create_time: '2017-03-20'
-          },
-        ],
+        userBuys: [],
+
+        count: 0,
+        request: {
+          page: 1,
+          uid: this.$route.params.user.id
+        }
 
       }
-		},
+    },
     created(){
-			this.user = this.$route.params.user.name
+      this.user = this.$route.params.user
+      this.getUserBuy(this.request)
     },
 
     methods: {
+
+      /**
+       * 请求封装
+       * */
+      getUserBuy(data){
+        this.$http.get(this.$global.url + 'web/orders', {
+          params: data
+        }).then(res => {
+        	this.loading = false
+          if ('200' === res.data.code) {
+            this.userBuys = res.data.data
+            this.count = res.data.count
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
       changePage(e){
-      	console.log(e)
+        console.log(e)
       }
     }
-	}
+  }
 </script>
