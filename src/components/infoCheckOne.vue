@@ -31,9 +31,7 @@
             <span>{{category.name}}</span>
           </Checkbox>
         </Checkbox-group>
-        <div class="info-btn">
-          <Button type="primary" @click="addStoreCategory" class="info-on-submit">保存</Button>
-        </div>
+        <Button type="primary" @click="addStoreCategory" class="info-on-submit">保存</Button>
       </div>
       <!--/选择分类-->
     </div>
@@ -80,10 +78,6 @@
     font-size: 16px;
     margin: 10px 0;
     font-weight: 600;
-  }
-
-  .info-btn {
-    text-align: center;
   }
 
   .info-on-submit {
@@ -170,23 +164,6 @@
           })
         })
       },
-
-
-      /**
-       * 分类全选
-       * */
-/*      categoryCheckAll () {
-        this.checkAll = !this.checkAll
-        if (this.checkAll) {
-          let tmpArr = []
-          this.categories.forEach(item => {
-            tmpArr.push(item.id)
-          })
-          this.checkAllGroup = tmpArr
-        } else {
-          this.checkAllGroup = [];
-        }
-      },*/
 
       /**
        * 监听每个checkbox

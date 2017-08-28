@@ -160,12 +160,22 @@
                   props: {
                     type: 'text',
                     size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.showAllNews(params.row)
+                    }
                   }
                 }, '查看'),
                 h('Button', {
                   props: {
                     type: 'text',
                     size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.closeStore(params.index, params.row.id)
+                    }
                   }
                 }, '关闭')
               ]);
@@ -178,7 +188,7 @@
           page: 1,
           state: 1,
         },
-        passIds: [],
+        closeIds: [],
       }
     },
     created(){
@@ -198,28 +208,35 @@
         for (let i in groups) {
           arr.push(groups[i].id)
         }
-        this.passIds = arr
+        this.closeIds = arr
       },
 
       /**
        * 全选通过
        * */
       closeAll(){
-        this.$Modal.confirm({
-          title: '提示',
-          content: '<p>确定关闭所选的店铺吗？</p>',
-          onOk: () => {
-            this.$Message.info('已全部关闭');
-          },
-          onCancel: () => {
-            this.$Message.warning('已取消');
-          }
-        })
+        if (this.closeIds.length) {
+          this.$Modal.confirm({
+            title: '提示',
+            content: '<p>确定关闭所选的店铺吗？</p>',
+            onOk: () => {
+              this.closeAPI([].concat(this.closeIds), () => {
+                this.getInfoPass({page: 1, state: 1})
+                this.$Message.info('已全部关闭')
+              })
+            },
+            onCancel: () => {
+              this.$Message.warning('已取消')
+            }
+          })
+        }
       },
 
       /**
        * 请求封装
        * */
+
+      //列表请求
       getInfoPass(data){
         this.$http.get(this.$global.url + 'web/stores', {
           params: data,
@@ -240,6 +257,24 @@
         })
       },
 
+      //关闭请求
+      closeAPI(ids, cb){
+        this.$http.post(this.$global.url + 'web/store/close', this.$qs.stringify({
+          store_id: ids
+        })).then(res => {
+          if ('200' === res.data.code) {
+            typeof cb === 'function' && cb()
+          } else {
+            this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.$Modal.error({
+            title: '提示',
+            content: error,
+          })
+        })
+      },
+
       /**
        * 店铺搜索
        * */
@@ -250,6 +285,36 @@
         tmp[this.select] = this.search
         this.request = tmp
         this.getInfoPass(tmp)
+      },
+
+      /**
+       * 操作
+       * */
+
+      //跳转详细信息，同时修改分类
+      showAllNews (params) {
+        this.$router.push({
+          name: 'info_check_one', params: {
+            id: params.id
+          }
+        })
+      },
+
+      //关闭店铺
+      closeStore(index, id){
+        this.$Modal.confirm({
+          title: '提示',
+          content: '<p>确定关闭该店铺吗？</p>',
+          onOk: () => {
+            this.closeAPI([id], () => {
+              this.$Message.success('关闭成功')
+              this.infoPasses.splice(index, 1)
+            })
+          },
+          onCancel: () => {
+            this.$Message.warning('已取消')
+          }
+        })
       }
     },
 

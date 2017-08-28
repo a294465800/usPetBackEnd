@@ -49,6 +49,15 @@
 
 <style>
 
+  .info-check {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
   .table-action {
     margin-bottom: 20px;
   }
@@ -66,7 +75,7 @@
 </style>
 
 <script>
-  import expandRow from './expandInfoPass.vue'
+  import expandRow from './expandUserList.vue'
   export default {
     data() {
       return {

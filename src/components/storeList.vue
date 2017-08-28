@@ -86,14 +86,14 @@
 </template>
 
 <script>
-  import expandRow from './expandStoreList.vue'
+  import expandRow from './expandInfoPass.vue'
   export default {
     data() {
       return {
         search: '',
         select: 'store_name',
         tableSize: 'default',
-        loading: false,
+        loading: true,
         columns: [
           {
           	title: 'ID',
@@ -176,56 +176,7 @@
             }
           }
         ],
-        stores: [
-          {
-            id: 1,
-            name: '萌萌哒宠物店',
-            area: '广东省广州市桥',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-03-20',
-            deal: 500,
-            month: 12,
-            year: 50,
-            owner: '陈飞珠'
-          },
-          {
-            id: 2,
-            name: '萌萌哒宠物店',
-            area: '广东省广州番禺',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-06-20',
-            deal: 20,
-            month: 2.1,
-            year: 21,
-            owner: '刘爱琪'
-          },
-          {
-            id: 3,
-            name: '萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店萌萌哒宠物店',
-            area: '山东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-11-20',
-            deal: 100,
-            month: 1.2,
-            year: 10,
-            owner: '谢一波'
-          },
-          {
-            id: 4,
-            name: '萌萌哒宠物店',
-            area: '广东省广州大学城',
-            address: '广东省广州市番禺区创意花园',
-            tel: 18456122214,
-            time: '2017-01-19',
-            deal: 111,
-            month: 6,
-            year: 110,
-            owner: '白客'
-          },
-        ],
+        stores: [],
         passIds: [],
 
         count: 0,

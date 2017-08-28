@@ -1,5 +1,9 @@
 <template>
-  <div class="info-check">
+  <div class="info-check" v-if="loading">
+    <Spin size="large" fix></Spin>
+  </div>
+
+  <div class="info-check" v-else>
 
     <!--面包屑导航-->
     <Breadcrumb>
@@ -7,18 +11,6 @@
       <Breadcrumb-item>已处理</Breadcrumb-item>
     </Breadcrumb>
     <!--/面包屑导航-->
-
-    <!--搜索框-->
-<!--    <div class="search-wrap">
-      <Input v-model="search" placeholder="请输入">
-      <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="id">ID</Option>
-        <Option value="name">昵称</Option>
-      </Select>
-      <Button slot="append" icon="ios-search"></Button>
-      </Input>
-    </div>-->
-    <!--/搜索框-->
 
     <!--内容展示-->
     <div class="table-action" style="margin-top: 30px">
@@ -90,6 +82,7 @@
         search: '',
         select: 'id',
         tableSize: 'default',
+        loading: true,
         columns: [
           {
             title: 'ID',
