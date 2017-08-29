@@ -10,13 +10,13 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="commoditySearch">
       <Input v-model="search" placeholder="请输入">
         <Select v-model="select" slot="prepend" style="width: 80px">
-          <Option value="commodity_id">商品ID</Option>
-          <Option value="commodity">商品名称</Option>
+          <Option value="product_id">商品ID</Option>
+          <Option value="product_name">商品名称</Option>
         </Select>
-        <Button slot="append" icon="ios-search"></Button>
+        <Button slot="append" icon="ios-search" @click="commoditySearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -111,7 +111,7 @@
     data() {
       return {
         search: '',
-        select: 'commodity_id',
+        select: 'product_id',
         tableSize: 'default',
         store: null,
         columns: [
@@ -249,8 +249,23 @@
         })
       },
 
-      changePage(e){
-        console.log(e)
+      changePage(page){
+    		this.request.page = page
+    		this.getStoreCommodity(this.request)
+      },
+
+
+      /**
+       * 商品搜索
+       * */
+      commoditySearch(){
+        const tmp = {
+          page: 1
+        }
+        tmp[this.select] = this.search
+        tmp.store_id = this.store.id
+        this.request = tmp
+        this.getStoreCommodity(tmp)
       },
 
     }

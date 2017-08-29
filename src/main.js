@@ -25,19 +25,27 @@ Vue.config.productionTip = false
  * */
 //sessionStorage.username判断登录状态
 router.beforeEach((to, from, next) => {
-  if (sessionStorage.username) {
-    if (to.name === 'Login') {
-      next(from.path)
-    } else {
-      next()
-    }
-  } else {
-    if (to.name !== 'Login') {
-      next({path: '/login'})
-    } else {
-      next()
-    }
-  }
+  axios.get(globalData.globalData.url + 'web/check')
+    .then(res => {
+      if ('1' === res.data.data) {
+        if (to.name === 'Login') {
+          next(from.path)
+        } else {
+          next()
+        }
+      } else {
+        if (to.name !== 'Login') {
+          next({path: '/login'})
+        } else {
+          next()
+        }
+      }
+    }).catch(error => {
+    iView.Modal.error({
+      title: '提示',
+      content: error
+    })
+  })
 })
 
 /* eslint-disable no-new */

@@ -14,13 +14,13 @@
     <!--/面包屑导航-->
 
     <!--搜索框-->
-    <div class="search-wrap">
+    <div class="search-wrap" @keyup.enter="commoditySearch">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="id">单号</Option>
-        <Option value="store">店铺</Option>
+        <Option value="number">单号</Option>
+        <Option value="store_name">店铺</Option>
       </Select>
-      <Button slot="append" icon="ios-search"></Button>
+      <Button slot="append" icon="ios-search" @click="commoditySearch"></Button>
       </Input>
     </div>
     <!--/搜索框-->
@@ -104,10 +104,10 @@
     data() {
       return {
       	loading: true,
-        user: '',
+        user: null,
         tableSize: 'default',
         search: '',
-        select: 'id',
+        select: 'number',
         columns: [
           {
             title: '单号',
@@ -201,9 +201,24 @@
         })
       },
 
-      changePage(e){
-        console.log(e)
-      }
+      changePage(page){
+      	this.request.page = page
+        this.getUserBuy(this.request)
+      },
+
+
+      /**
+       * 商品搜索
+       * */
+      commoditySearch(){
+        const tmp = {
+          page: 1
+        }
+        tmp[this.select] = this.search
+        tmp.uid = this.user.id
+        this.request = tmp
+        this.getUserBuy(tmp)
+      },
     }
   }
 </script>

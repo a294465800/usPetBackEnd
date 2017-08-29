@@ -68,7 +68,7 @@
     <div class="search-wrap" @keyup.enter="searchOrderOne">
       <Input v-model="search" placeholder="请输入">
       <Select v-model="select" slot="prepend" style="width: 80px">
-        <Option value="order_id">单号</Option>
+        <Option value="number">单号</Option>
         <Option value="nickname">昵称</Option>
       </Select>
       <Button slot="append" icon="ios-search" @click="searchOrderOne"></Button>
@@ -108,7 +108,7 @@
         tableSize: 'default',
         loading: true,
         search: '',
-        select: 'order_id',
+        select: 'number',
         columns: [
           {
             title: '单号',
@@ -204,7 +204,7 @@
             }
             this.userBuys = tmp
           	this.userBuys = tmp
-            this.count = res.data.count
+            this.count = Number(res.data.count)
           } else {
           	this.$Message.error(res.data.msg)
           }
@@ -232,6 +232,7 @@
       		page: 1,
         }
         tmp[this.select] = this.search
+      	tmp.product_id = this.commodity.id
         this.request = tmp
         this.getAllOrder(this.request)
       },
