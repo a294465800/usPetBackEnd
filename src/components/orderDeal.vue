@@ -218,9 +218,13 @@
         this.$http.get(this.$global.url + 'web/orders', {
         	params: data,
         }).then( res => {
+          this.loading = false
         	if('200' === res.data.code){
-        		this.loading = false
-        		this.userBuys = res.data.data
+            let tmp = res.data.data
+            for(let i in tmp){
+        			tmp[i].createtime = new Date(tmp[i].createtime * 1000).toLocaleDateString()
+            }
+        		this.userBuys = tmp
             this.count = Number(res.data.count)
           }else {
         		this.$Message.error(res.data.msg)

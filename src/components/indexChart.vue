@@ -183,6 +183,7 @@
 </style>
 
 <template>
+
   <div class="index-chart">
     <!--面包屑导航-->
     <Breadcrumb>
@@ -223,20 +224,25 @@
     <!--/总流水统计-->
 
     <!--日流水-->
-    <div class="accountDaily">
+
+    <div class="accountDaily" v-if="loading">
+      <Spin size="large" fix></Spin>
+    </div>
+
+    <div class="accountDaily" v-else>
       <div class="accountDaily-title">
         <div class="account-tag">月流水</div>
         <div class="account-time-picker">
           <Row>
             <Col span="12">
-            <Date-picker type="month" :placeholder="now" style="width: 200px" :editable="pickerEditable"
+            <Date-picker type="month" :value="now" style="width: 200px" :editable="pickerEditable"
                          @on-change="changeDate"></Date-picker>
             </Col>
           </Row>
         </div>
       </div>
       <!--日流水图表-->
-      <div class="account-chart" v-if="dail">
+      <div class="account-chart" v-if="daily">
         <bar-chart :chart-data="dataCollection" :options="options"></bar-chart>
       </div>
       <div v-else>
@@ -253,10 +259,11 @@
   export default {
     data() {
       return {
-        yearPayment: 78,
-        yearTargetNum: 100,
-        monthPayment: 5,
-        monthTargetNum: 10,
+        loading: true,
+        yearPayment: 0,
+        yearTargetNum: localStorage.yearTargetNum || 100,
+        monthPayment: 0,
+        monthTargetNum: localStorage.monthTargetNum || 10,
         tmp: 0,
         pickerEditable: false,
         now: new Date().getFullYear() + '-' + new Date().getMonth(),
@@ -266,124 +273,7 @@
          * 模拟数据
          * */
         days: [],
-        dail: [10, 11, 20, 12, 50, 2, 51, 11, 1, 11, 21, 1],
-        daily: [10, 11, 20, 12, 50, 2, 51, 11, 1, 11, 21, 1, 2, 5, 23, 2, 12, 3, 14, 23, 23, 2, 1, 5, 23, 3, 11, 22, 23, 42, 12],
-        dails: [2, 13, 20, 12, 22, 2, 11, 14, 1, 11, 21, 8],
-        dailyt: [
-          {
-            account: 2.5,
-            day: 1
-          },
-          {
-            account: 1.5,
-            day: 2
-          },
-          {
-            account: 4.5,
-            day: 3
-          },
-          {
-            account: 5.5,
-            day: 4
-          },
-          {
-            account: .5,
-            day: 5
-          },
-          {
-            account: 2.5,
-            day: 6
-          },
-          {
-            account: 1.5,
-            day: 7
-          },
-          {
-            account: 4.5,
-            day: 8
-          },
-          {
-            account: 5.5,
-            day: 9
-          },
-          {
-            account: .5,
-            day: 10
-          },
-          {
-            account: 2.5,
-            day: 11
-          },
-          {
-            account: 1.5,
-            day: 12
-          },
-          {
-            account: 4.5,
-            day: 13
-          },
-          {
-            account: 5.5,
-            day: 14
-          },
-          {
-            account: .5,
-            day: 15
-          },
-          {
-            account: 2.5,
-            day: 16
-          },
-          {
-            account: 1.5,
-            day: 17
-          },
-          {
-            account: 4.5,
-            day: 18
-          },
-          {
-            account: 5.5,
-            day: 19
-          },
-          {
-            account: .5,
-            day: 20
-          },
-          {
-            account: 2.5,
-            day: 21
-          },
-          {
-            account: 1.5,
-            day: 22
-          },
-          {
-            account: 4.5,
-            day: 23
-          },
-          {
-            account: 5.5,
-            day: 24
-          },
-          {
-            account: .5,
-            day: 25
-          },
-          {
-            account: 2.5,
-            day: 26
-          },
-          {
-            account: 1.5,
-            day: 27
-          },
-          {
-            account: 4.5,
-            day: 28
-          },
-        ],
-        biggest: 0
+        daily: null,
       }
     },
 
@@ -393,8 +283,7 @@
 
     created(){
       this.store = this.$route.params.store
-      this.days = [].concat(this.$global.days)
-      this.days.length = 12
+      this.getAccount(this.now + '-01')
     },
 
     /**
@@ -415,13 +304,60 @@
             {
               label: this.now,
               backgroundColor: '#ff963d',
-              data: this.dail,
+              data: this.daily,
             }
           ],
         }
       },
     },
     methods: {
+
+      /**
+       * 获取图表数据
+       * */
+      getAccount(date){
+      	this.loading = true
+        this.$http.get(this.$global.url + 'web/store/count', {
+          params: {date: date || ''}
+        }).then(res => {
+        	this.loading = false
+        	if('200' === res.data.code){
+            const days = res.data.data.days
+            this.yearPayment = res.data.data.year
+            this.monthPayment = res.data.data.month
+            if(days.length){
+              let days_count = this.getDaysCount()
+              let current_days = [].concat(this.$global.days)
+              current_days.length = days_count.length
+              for (let day in days) {
+                days_count[Number(days[day].datetime)] = days[day].Pcount
+              }
+              this.daily = days_count
+              this.days = current_days
+            }else {
+            	this.daily = null
+            }
+          }else {
+        		this.$Message.error(res.data.msg)
+          }
+        }).catch(error => {
+          this.$Modal.error({
+            title: '提示',
+            content: error
+          })
+        })
+      },
+
+      /**
+       * 获取指定月份天数，返回初始流水
+       * */
+      getDaysCount(){
+        const date = this.now.split('-')
+        const time = new Date(date[0], date[1], 0)
+        let days_count = [].concat(this.$global.days_count)
+        days_count.length = time.getDate()
+        return days_count
+      },
 
       /**
        * 选择年目标
@@ -447,6 +383,7 @@
               that.$Message.warning('请输入整数')
             } else {
               that.yearTargetNum = that.tmp
+              localStorage.yearTargetNum = that.tmp
             }
           }
         })
@@ -476,6 +413,7 @@
               that.$Message.warning('请输入整数')
             } else {
               that.monthTargetNum = that.tmp
+              localStorage.monthTargetNum = that.tmp
             }
           }
         })
@@ -484,15 +422,9 @@
       /**
        * 日期切换流水
        * */
-      changeDate(e){
-        this.now = e
-        this.days = [].concat(this.$global.days)
-        if (this.dail === this.daily) {
-          this.dail = null
-        } else {
-          this.dail = this.daily
-          this.days.length = this.daily.length
-        }
+      changeDate(date){
+        this.now = date
+        this.getAccount(date + '-01')
       }
     }
   }

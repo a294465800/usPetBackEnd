@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
   .info-check {
     position: relative;
     height: 100%;

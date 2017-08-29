@@ -165,7 +165,7 @@
           },
           {
             title: '订单日期',
-            key: 'time',
+            key: 'createtime',
             align: 'center',
             width: 200,
             sortable: true
@@ -198,7 +198,12 @@
         }).then( res => {
         	this.loading = false
           if('200' === res.data.code){
-          	this.userBuys = res.data.data
+            let tmp = res.data.data
+            for(let i in tmp){
+              tmp[i].createtime = new Date(tmp[i].createtime * 1000).toLocaleDateString()
+            }
+            this.userBuys = tmp
+          	this.userBuys = tmp
             this.count = res.data.count
           } else {
           	this.$Message.error(res.data.msg)
