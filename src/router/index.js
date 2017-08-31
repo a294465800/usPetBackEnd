@@ -18,6 +18,7 @@ import userList from '@/components/userList'
 import userOne from '@/components/userOne'
 import complaintList from '@/components/complaintList'
 import complaintHandle from '@/components/complaintHandle'
+//import test from '@/components/test'
 
 Vue.use(Router)
 
