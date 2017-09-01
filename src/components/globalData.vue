@@ -1,8 +1,8 @@
 <script>
 
   const globalData = {
-//  	url: 'https://www.sennkisystem.cn/api/',
-    url: 'http://192.168.3.22:8888/api/',
+  	url: 'https://www.sennkisystem.cn/api/',
+//    url: 'http://192.168.3.22:8888/api/',
 
     /**
      * 流水图表参数
